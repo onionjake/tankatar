@@ -29,6 +29,8 @@ public class Bullet extends TObject {
    */
   public Bullet(Tank t, Coordinate c) {
     super(assets().getImage("bullet.png"));
+    setPos(t.x,t.y,t.z);
+    setVelocity(3,3,3);
   }
     
   }
