@@ -39,7 +39,6 @@ public class Tankatar implements Game, Keyboard.Listener {
 
     ding = assets().getSound("ding");
 
-    ding.play();
   }
 
   @Override
@@ -53,6 +52,7 @@ public class Tankatar implements Game, Keyboard.Listener {
 
   @Override
   public void onKeyDown(Keyboard.Event event) {
+    ding.play();
   }
 
   @Override
