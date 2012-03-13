@@ -24,6 +24,7 @@ import static playn.core.PlayN.*;
  */
 public class Tank extends TObject {
   
+  private static double FRICTION = 10.0;
   private double health;
   private double score;
   

@@ -35,6 +35,7 @@ public class Tankatar implements Game, Keyboard.Listener {
   private Sound ding;
   private float frameAlpha;
   private float touchVectorX, touchVectorY;
+  private Coordinate touchPosition;
   private ImmediateLayer gameLayer;
   private World world;
 
@@ -69,6 +70,7 @@ public class Tankatar implements Game, Keyboard.Listener {
       @Override
       public void onPointerStart(Pointer.Event event) {
         touchMove(event.x(), event.y());
+        touchPosition = new Coordinate(event.x(),event.y(),0);
       }
     });
 
@@ -83,20 +85,21 @@ public class Tankatar implements Game, Keyboard.Listener {
   @Override
   public void update(float delta) {
     for (Tank t:players) {
+      t.setAcceleration(0,0,0);
 
       if (t.isResting()) {
         // Keyboard control.
         if (controlLeft) {
-          t.ax = -1.0;
+          t.ax = -50.0;
         }
         if (controlRight) {
-          t.ax = 1.0;
+          t.ax = 50.0;
         }
         if (controlUp) {
-          t.ay = -1.0;
+          t.ay = -50.0;
         }
         if (controlDown) {
-          t.ay = 1.0;
+          t.ay = 50.0;
         }
 
         // Mouse Control.
@@ -112,7 +115,7 @@ public class Tankatar implements Game, Keyboard.Listener {
     System.out.println("Key Down");
     switch (event.key()) {
       case SPACE:
-        players.get(0).x = 100;
+        players.get(0).shoot(touchPosition);
         break;
       case LEFT:
         controlLeft = true;
