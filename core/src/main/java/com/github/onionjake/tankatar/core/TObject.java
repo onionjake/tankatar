@@ -29,6 +29,7 @@ public class TObject {
   public double vx, vy, vz;
   public double ax, ay, az;
   public double r;
+  private static double FRICTION = 1.0;
 
   int lastUpdated;
   boolean resting;
@@ -106,6 +107,15 @@ public class TObject {
   }
 
   public void update(float delta) {
+      vx -= vx * this.FRICTION * delta;
+      //if (vx < 0) vx = 0;
+
+      vy -= vy * this.FRICTION * delta;
+     // if (vy < 0) vy = 0;
+
+      if (vz < 0) {
+        vz = 0;
+      }
     vx += ax * delta;
     vy += ay * delta;
     vz += az * delta;
