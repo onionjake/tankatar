@@ -28,14 +28,16 @@ public class World {
   public static final int TILE_WIDTH = 100;
   public static final int TILE_HEIGHT = 80;
 
+  // In tiles
+  public static final int WORLD_WIDTH = 20;
+  public static final int WORLD_HEIGHT = 20;
 
   private ArrayList<Tile> world = new ArrayList<Tile>();
 
   public World() {
-    world.add(new Tile(assets().getImage("block_grass.png"), new Coordinate(0,0)));
-    world.add(new Tile(assets().getImage("block_grass.png"), new Coordinate(1,0)));
-    world.add(new Tile(assets().getImage("block_grass.png"), new Coordinate(0,1)));
-    world.add(new Tile(assets().getImage("block_grass.png"), new Coordinate(0,2)));
+    for(int i=0;i<WORLD_WIDTH;i++)
+      for(int j=0;j<WORLD_WIDTH;j++)
+        world.add(new Tile(assets().getImage("block_grass.png"), new Coordinate(i,j)));
   }
 
   public void paint(Surface surf, float alpha) {
