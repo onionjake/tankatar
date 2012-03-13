@@ -17,6 +17,9 @@ along with tankatar.  See gpl3.txt. If not, see <http://www.gnu.org/licenses/>.
 */
 package com.github.onionjake.tankatar.core;
 
+import playn.core.Image;
+import playn.core.Surface;
+
 public class TObject {
 
   public Image img;
@@ -29,8 +32,8 @@ public class TObject {
   int lastUpdated;
   boolean resting;
 
-  public TObject(Imag  img) {
-    this.img = img
+  public TObject(Image  img) {
+    this.img = img;
   }
   
   public boolean isResting() {
@@ -71,5 +74,9 @@ public class TObject {
 
   public double z(double alpha) {
     return z * alpha + oldz * (1.0f - alpha);
+  }
+
+  public void paint(Surface surf, float alpha) {
+    surf.drawImage(img,(int)x,(int)y);
   }
 }

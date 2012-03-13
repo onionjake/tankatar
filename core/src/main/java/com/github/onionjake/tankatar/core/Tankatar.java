@@ -20,7 +20,9 @@ package com.github.onionjake.tankatar.core;
 import static playn.core.PlayN.*;
 
 import playn.core.Game;
+import playn.core.Surface;
 import playn.core.Image;
+import playn.core.ImmediateLayer;
 import playn.core.ImageLayer;
 import playn.core.Keyboard;
 import playn.core.Pointer;
@@ -29,14 +31,22 @@ import playn.core.Sound;
 public class Tankatar implements Game, Keyboard.Listener {
 
   private Sound ding;
+  private float frameAlpha;
   private float touchVectorX, touchVectorY;
+  private ImmediateLayer gameLayer;
+  private World world;
 
   @Override
   public void init() {
+    world = new World();
     // create and add background image layer
-    Image bgImage = assets().getImage("images/bg.png");
-    ImageLayer bgLayer = graphics().createImageLayer(bgImage);
-    graphics().rootLayer().add(bgLayer);
+    gameLayer = graphics().createImmediateLayer(new ImmediateLayer.Renderer() {
+      public void render(Surface surface) {
+        surface.clear();
+        world.paint(surface, frameAlpha);
+      }
+    });
+    graphics().rootLayer().add(gameLayer);
 
     keyboard().setListener(this);
     pointer().setListener(new Pointer.Listener() {
