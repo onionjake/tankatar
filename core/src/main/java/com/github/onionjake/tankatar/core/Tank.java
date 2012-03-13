@@ -39,8 +39,8 @@ public class Tank extends TObject {
     super(tank,c);
   }
 
-  public TObject shoot(Coordinate c) {
-    return new Bullet(this,c);
-  }
+  //public TObject shoot(Coordinate c) {
+  //  return new Bullet(this,c);
+  //}
 }
 

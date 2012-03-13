@@ -113,7 +113,7 @@ public class Tankatar implements Game, Keyboard.Listener {
     System.out.println("Key Down");
     switch (event.key()) {
       case SPACE:
-        players.get(0).shoot(touchPosition);
+        //players.get(0).shoot(touchPosition);
         break;
       case LEFT:
         controlLeft = true;

@@ -18,6 +18,8 @@ along with tankatar.  See gpl3.txt. If not, see <http://www.gnu.org/licenses/>.
 package com.github.onionjake.tankatar.core;
 
 import static playn.core.PlayN.*;
+
+import playn.core.ImageLayer;
 /**
  * Bullets
  */
@@ -27,10 +29,9 @@ public class Bullet extends TObject {
    * Create a bullet for tank with starting position x,y,z
    * @param Tank, x, y, z
    */
-  public Bullet(Tank t, Coordinate c) {
-    super(assets().getImage("bullet.png"));
-    setPos(t.x,t.y,t.z);
+  public Bullet(ImageLayer b, Tank t, Coordinate c) {
+    super(b, new Coordinate(t.x,t.y,t.z));
     setVelocity(3,3,3);
   }
     
-  }
+}
