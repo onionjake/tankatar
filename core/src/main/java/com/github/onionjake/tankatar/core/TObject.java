@@ -17,13 +17,15 @@ along with tankatar.  See gpl3.txt. If not, see <http://www.gnu.org/licenses/>.
 */
 package com.github.onionjake.tankatar.core;
 
+import static playn.core.PlayN.*;
+
 import playn.core.Image;
-import playn.core.SurfaceLayer;
-import playn.core.Surface;
+import playn.core.ImageLayer;
+import playn.core.GroupLayer;
 
 public class TObject {
 
-  public Image img;
+  public ImageLayer img;
   public double oldx, oldy, oldz;
   public double x, y, z;
   public double vx, vy, vz;
@@ -46,19 +48,25 @@ public class TObject {
     vz = 0;
   }
 
-  public TObject(Image  img) {
+  public TObject(ImageLayer img) {
     this.img = img;
     resting = true;
     zero();
   }
 
-  public TObject(Image img,Coordinate c) {
+  public TObject(ImageLayer img,Coordinate c) {
     zero();
     this.img = img;
     this.x   = c.x;
     this.y   = c.y;
     this.z   = c.z;
     resting = true;
+    updateLayer();
+  }
+
+  private void updateLayer()
+  {
+    img.setTranslation((float)x,(float)y);
   }
   
   public boolean isResting() {
@@ -75,6 +83,7 @@ public class TObject {
     this.x = x;
     this.y = y;
     this.z = z;
+    updateLayer();
   }
 
   public void setVelocity(double vx, double vy, double vz) {
@@ -101,11 +110,6 @@ public class TObject {
     return z * alpha + oldz * (1.0f - alpha);
   }
 
-  public void paint(SurfaceLayer surf, float alpha) {
-    surf.clear(0);
-    surf.drawImage(img,(float)x,(float)y);
-  }
-
   public void update(float delta) {
       vx -= vx * this.FRICTION * delta;
       //if (vx < 0) vx = 0;
@@ -123,5 +127,6 @@ public class TObject {
     x += vx * delta;
     y += vy * delta;
     z += vz * delta;
+    updateLayer();
   }
 }

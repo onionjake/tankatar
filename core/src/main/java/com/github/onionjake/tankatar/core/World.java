@@ -19,8 +19,9 @@ package com.github.onionjake.tankatar.core;
 
 import static playn.core.PlayN.*;
 
-import playn.core.SurfaceLayer;
+import playn.core.GroupLayer;
 import playn.core.Image;
+import playn.core.ImageLayer;
 
 import java.util.ArrayList;
 
@@ -32,29 +33,33 @@ public class World {
   public static final int WORLD_WIDTH = 20;
   public static final int WORLD_HEIGHT = 20;
 
-  private ArrayList<TObject> world = new ArrayList<TObject>();
+  private ArrayList<Tile> world = new ArrayList<Tile>();
+  private ArrayList<TObject> objects = new ArrayList<TObject>();
 
-  public World() {
-    world.add(new Bullet(new Tank(), new Coordinate (15,15,15)));
-    for(int i=0;i<WORLD_WIDTH;i++)
-      for(int j=0;j<WORLD_WIDTH;j++)
-        world.add(new Tile(assets().getImage("block_grass.png"), new Coordinate(i,j)));
-  }
+  private GroupLayer gameLayer;
 
-  public Tank newPlayer() {
-    Tank t = new Tank();
-    world.add(t);
-    return t;
-  }
-
-  public void paint(SurfaceLayer surf, float alpha) {
-    for(TObject t: world) {
-      t.paint(surf,alpha);
+  public World(GroupLayer worldLayer, GroupLayer gameLayer) {
+    this.gameLayer = gameLayer;
+    for(int i=0;i<WORLD_WIDTH;i++) {
+      for(int j=0;j<WORLD_WIDTH;j++) {
+        ImageLayer l = graphics().createImageLayer(assets().getImage("block_grass.png"));
+        world.add(new Tile(l, new Coordinate(i,j)));
+        worldLayer.add(l);
+      }
     }
   }
 
+  public Tank newPlayer() {
+    ImageLayer foo = graphics().createImageLayer(assets().getImage("redtank.png")); 
+    gameLayer.add(foo);
+    Tank bar = new Tank(foo,new Coordinate(10,10,0));
+    objects.add(bar);
+    
+    return bar;
+  }
+
   public void update(float delta) {
-    for (TObject t:world) {
+    for (TObject t:objects) {
       t.update(delta);
     }
   }

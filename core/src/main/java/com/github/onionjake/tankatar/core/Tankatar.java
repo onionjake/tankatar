@@ -22,7 +22,7 @@ import static playn.core.PlayN.*;
 import playn.core.Game;
 import playn.core.Surface;
 import playn.core.Image;
-import playn.core.SurfaceLayer;
+import playn.core.GroupLayer;
 import playn.core.ImageLayer;
 import playn.core.Keyboard;
 import playn.core.Pointer;
@@ -35,7 +35,7 @@ public class Tankatar implements Game, Keyboard.Listener {
   private Sound ding;
   private float frameAlpha;
   private float touchVectorX, touchVectorY;
-  public SurfaceLayer gameLayer;
+  private GroupLayer gameLayer;
   private Coordinate touchPosition;
   private World world;
 
@@ -46,11 +46,13 @@ public class Tankatar implements Game, Keyboard.Listener {
   @Override
   public void init() {
 
-    world = new World();
+    GroupLayer worldLayer = graphics().createGroupLayer();
+    gameLayer = graphics().createGroupLayer();
+
+    world = new World(worldLayer,gameLayer);
     players.add(world.newPlayer());
     
-    // Background layer
-    gameLayer = graphics().createSurfaceLayer(World.WORLD_WIDTH*World.TILE_WIDTH,World.WORLD_HEIGHT*World.TILE_HEIGHT);
+    graphics().rootLayer().add(worldLayer);
     graphics().rootLayer().add(gameLayer);
 
     keyboard().setListener(this);
@@ -76,7 +78,6 @@ public class Tankatar implements Game, Keyboard.Listener {
 
   @Override
   public void paint(float alpha) {
-    world.paint(gameLayer,1);
   }
 
   @Override

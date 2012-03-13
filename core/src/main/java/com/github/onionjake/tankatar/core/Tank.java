@@ -18,6 +18,10 @@ along with tankatar.  See gpl3.txt. If not, see <http://www.gnu.org/licenses/>.
 package com.github.onionjake.tankatar.core;
 
 import static playn.core.PlayN.*;
+
+import playn.core.GroupLayer;
+import playn.core.ImageLayer;
+
 /**
  * Tanks represent players in the game
  * Properties: health, score
@@ -31,8 +35,8 @@ public class Tank extends TObject {
   /**
    * Tank Constuctor
    */
-  public Tank() {
-    super(assets().getImage("redtank.png")); 
+  public Tank(ImageLayer tank, Coordinate c) {
+    super(tank,c);
   }
 
   public TObject shoot(Coordinate c) {
