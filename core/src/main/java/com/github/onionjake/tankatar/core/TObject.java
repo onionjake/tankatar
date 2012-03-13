@@ -18,6 +18,7 @@ along with tankatar.  See gpl3.txt. If not, see <http://www.gnu.org/licenses/>.
 package com.github.onionjake.tankatar.core;
 
 import playn.core.Image;
+import playn.core.SurfaceLayer;
 import playn.core.Surface;
 
 public class TObject {
@@ -99,8 +100,9 @@ public class TObject {
     return z * alpha + oldz * (1.0f - alpha);
   }
 
-  public void paint(Surface surf, float alpha) {
-    surf.drawImage(img,(int)x,(int)y);
+  public void paint(SurfaceLayer surf, float alpha) {
+    surf.clear(0);
+    surf.drawImage(img,(float)x,(float)y);
   }
 
   public void update(float delta) {

@@ -19,7 +19,7 @@ package com.github.onionjake.tankatar.core;
 
 import static playn.core.PlayN.*;
 
-import playn.core.Surface;
+import playn.core.SurfaceLayer;
 import playn.core.Image;
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class World {
     return t;
   }
 
-  public void paint(Surface surf, float alpha) {
+  public void paint(SurfaceLayer surf, float alpha) {
     for(TObject t: world) {
       t.paint(surf,alpha);
     }
