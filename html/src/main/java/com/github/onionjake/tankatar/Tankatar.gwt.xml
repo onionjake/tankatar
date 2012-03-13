@@ -1,0 +1,10 @@
+<module rename-to='tankatar'>
+  <inherits name='playn.PlayN'/>
+
+  <source path='core'/>
+  <source path='html'/>
+
+  <public path="resources" />
+
+  <entry-point class='com.github.onionjake.tankatar.html.TankatarHtml'/>
+</module>
