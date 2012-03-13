@@ -28,6 +28,8 @@ import playn.core.Keyboard;
 import playn.core.Pointer;
 import playn.core.Sound;
 
+import java.util.ArrayList;
+
 public class Tankatar implements Game, Keyboard.Listener {
 
   private Sound ding;
@@ -36,9 +38,15 @@ public class Tankatar implements Game, Keyboard.Listener {
   private ImmediateLayer gameLayer;
   private World world;
 
+  private boolean controlLeft, controlRight, controlUp, controlDown;
+
+  private ArrayList<Tank> players = new ArrayList<Tank>();
+
   @Override
   public void init() {
+
     world = new World();
+    players.add(world.newPlayer());
     // create and add background image layer
     gameLayer = graphics().createImmediateLayer(new ImmediateLayer.Renderer() {
       public void render(Surface surface) {
@@ -70,16 +78,55 @@ public class Tankatar implements Game, Keyboard.Listener {
 
   @Override
   public void paint(float alpha) {
-    // the background automatically paints itself, so no need to do anything here!
   }
 
   @Override
   public void update(float delta) {
+    for (Tank t:players) {
+
+      if (t.isResting()) {
+        // Keyboard control.
+        if (controlLeft) {
+          t.ax = -1.0;
+        }
+        if (controlRight) {
+          t.ax = 1.0;
+        }
+        if (controlUp) {
+          t.ay = -1.0;
+        }
+        if (controlDown) {
+          t.ay = 1.0;
+        }
+
+        // Mouse Control.
+        t.ax += touchVectorX;
+        t.ay += touchVectorY;
+      }
+    }
+    world.update(delta/100);
   }
 
   @Override
   public void onKeyDown(Keyboard.Event event) {
-    ding.play();
+    System.out.println("Key Down");
+    switch (event.key()) {
+      case SPACE:
+        players.get(0).x = 100;
+        break;
+      case LEFT:
+        controlLeft = true;
+        break;
+      case UP:
+        controlUp = true;
+        break;
+      case RIGHT:
+        controlRight = true;
+        break;
+      case DOWN:
+        controlDown = true;
+        break;
+    }
   }
 
   @Override
@@ -88,6 +135,20 @@ public class Tankatar implements Game, Keyboard.Listener {
 
   @Override
   public void onKeyUp(Keyboard.Event event) {
+    switch (event.key()) {
+      case LEFT:
+        controlLeft = false;
+        break;
+      case UP:
+        controlUp = false;
+        break;
+      case RIGHT:
+        controlRight = false;
+        break;
+      case DOWN:
+        controlDown = false;
+        break;
+    }
   }
 
   private void touchMove(float x, float y) {

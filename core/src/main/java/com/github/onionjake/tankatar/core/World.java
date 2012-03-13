@@ -32,18 +32,30 @@ public class World {
   public static final int WORLD_WIDTH = 20;
   public static final int WORLD_HEIGHT = 20;
 
-  private ArrayList<Tile> world = new ArrayList<Tile>();
+  private ArrayList<TObject> world = new ArrayList<TObject>();
 
   public World() {
+    world.add(new Bullet(new Tank(), new Coordinate (15,15,15)));
     for(int i=0;i<WORLD_WIDTH;i++)
       for(int j=0;j<WORLD_WIDTH;j++)
         world.add(new Tile(assets().getImage("block_grass.png"), new Coordinate(i,j)));
   }
 
+  public Tank newPlayer() {
+    Tank t = new Tank();
+    world.add(t);
+    return t;
+  }
+
   public void paint(Surface surf, float alpha) {
-    for(Tile t: world) {
+    for(TObject t: world) {
       t.paint(surf,alpha);
     }
   }
 
+  public void update(float delta) {
+    for (TObject t:world) {
+      t.update(delta);
+    }
+  }
 }

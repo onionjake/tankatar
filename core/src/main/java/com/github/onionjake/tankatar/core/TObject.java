@@ -32,15 +32,31 @@ public class TObject {
   int lastUpdated;
   boolean resting;
 
+  public void zero() {
+    x = 0;
+    y = 0;
+    z = 0;
+    ax = 0;
+    ay = 0;
+    az = 0;
+    vx = 0;
+    vy = 0;
+    vz = 0;
+  }
+
   public TObject(Image  img) {
     this.img = img;
+    resting = true;
+    zero();
   }
 
   public TObject(Image img,Coordinate c) {
+    zero();
     this.img = img;
     this.x   = c.x;
     this.y   = c.y;
     this.z   = c.z;
+    resting = true;
   }
   
   public boolean isResting() {
@@ -85,5 +101,15 @@ public class TObject {
 
   public void paint(Surface surf, float alpha) {
     surf.drawImage(img,(int)x,(int)y);
+  }
+
+  public void update(float delta) {
+    vx += ax * delta;
+    vy += ay * delta;
+    vz += az * delta;
+
+    x += vx * delta;
+    y += vy * delta;
+    z += vz * delta;
   }
 }
