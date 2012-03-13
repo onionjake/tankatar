@@ -127,6 +127,15 @@ public class TObject {
     x += vx * delta;
     y += vy * delta;
     z += vz * delta;
+
+    // Don't let them go off the edge
+    if (x > World.TILE_WIDTH*World.WORLD_WIDTH) x = World.TILE_WIDTH*World.WORLD_WIDTH;
+    if (y > World.TILE_HEIGHT*World.WORLD_HEIGHT + World.WORLD_TOP_OFFSET) y = World.TILE_HEIGHT*World.WORLD_HEIGHT+ World.WORLD_TOP_OFFSET;
+    if (x < 0) x = 0;
+    if (y < World.WORLD_TOP_OFFSET) y = World.WORLD_TOP_OFFSET;
+
+
+
     updateLayer();
   }
 }

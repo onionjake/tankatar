@@ -32,14 +32,16 @@ public class World {
   // In tiles
   public static final int WORLD_WIDTH = 20;
   public static final int WORLD_HEIGHT = 20;
+  public static final int WORLD_TOP_OFFSET = 50;
 
   private ArrayList<Tile> world = new ArrayList<Tile>();
   private ArrayList<TObject> objects = new ArrayList<TObject>();
+  Tank player;
 
-  private GroupLayer gameLayer;
+  private GroupLayer worldLayer;
 
-  public World(GroupLayer worldLayer, GroupLayer gameLayer) {
-    this.gameLayer = gameLayer;
+  public World(GroupLayer worldLayer) {
+    this.worldLayer = worldLayer;
     for(int i=0;i<WORLD_WIDTH;i++) {
       for(int j=0;j<WORLD_WIDTH;j++) {
         ImageLayer l = graphics().createImageLayer(assets().getImage("block_grass.png"));
@@ -51,14 +53,15 @@ public class World {
 
   public Tank newPlayer() {
     ImageLayer foo = graphics().createImageLayer(assets().getImage("redtank.png")); 
-    gameLayer.add(foo);
+    worldLayer.add(foo);
     Tank bar = new Tank(foo,new Coordinate(10,10,0));
     objects.add(bar);
-    
+    player = bar;
     return bar;
   }
 
   public void update(float delta) {
+    worldLayer.setTranslation(-(float)player.x+320, -(float)player.y + 240 );
     for (TObject t:objects) {
       t.update(delta);
     }

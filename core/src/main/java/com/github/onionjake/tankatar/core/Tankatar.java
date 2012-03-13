@@ -35,7 +35,7 @@ public class Tankatar implements Game, Keyboard.Listener {
   private Sound ding;
   private float frameAlpha;
   private float touchVectorX, touchVectorY;
-  private GroupLayer gameLayer;
+  private GroupLayer worldLayer;
   private Coordinate touchPosition;
   private World world;
 
@@ -46,14 +46,12 @@ public class Tankatar implements Game, Keyboard.Listener {
   @Override
   public void init() {
 
-    GroupLayer worldLayer = graphics().createGroupLayer();
-    gameLayer = graphics().createGroupLayer();
+    worldLayer = graphics().createGroupLayer();
 
-    world = new World(worldLayer,gameLayer);
+    world = new World(worldLayer);
     players.add(world.newPlayer());
     
     graphics().rootLayer().add(worldLayer);
-    graphics().rootLayer().add(gameLayer);
 
     keyboard().setListener(this);
     pointer().setListener(new Pointer.Listener() {
