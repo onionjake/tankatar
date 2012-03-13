@@ -17,13 +17,21 @@ along with tankatar.  See gpl3.txt. If not, see <http://www.gnu.org/licenses/>.
 */
 package com.github.onionjake.tankatar.core;
 
-import playn.core.Image;
+public class Coordinate {
+  public double x,y,z;
 
-public class Tile extends TObject {
-  public Tile(Image img) {
-    super(img);
+  // From coordinates
+  public Coordinate(double x, double y, double z) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
   }
-  public Tile(Image img, Coordinate c) {
-    super(img, c);
+
+  // From tiles
+  public Coordinate(int x, int y) {
+    this.x = x*World.TILE_WIDTH;
+    this.y = y*World.TILE_HEIGHT;
+    this.z = 0;
   }
 }
+

@@ -25,10 +25,17 @@ import playn.core.Image;
 import java.util.ArrayList;
 
 public class World {
+  public static final int TILE_WIDTH = 100;
+  public static final int TILE_HEIGHT = 80;
+
+
   private ArrayList<Tile> world = new ArrayList<Tile>();
 
   public World() {
-    world.add(new Tile(assets().getImage("block_grass.png")));
+    world.add(new Tile(assets().getImage("block_grass.png"), new Coordinate(0,0)));
+    world.add(new Tile(assets().getImage("block_grass.png"), new Coordinate(1,0)));
+    world.add(new Tile(assets().getImage("block_grass.png"), new Coordinate(0,1)));
+    world.add(new Tile(assets().getImage("block_grass.png"), new Coordinate(0,2)));
   }
 
   public void paint(Surface surf, float alpha) {
@@ -36,4 +43,5 @@ public class World {
       t.paint(surf,alpha);
     }
   }
+
 }

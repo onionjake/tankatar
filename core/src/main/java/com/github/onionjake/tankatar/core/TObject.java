@@ -35,6 +35,13 @@ public class TObject {
   public TObject(Image  img) {
     this.img = img;
   }
+
+  public TObject(Image img,Coordinate c) {
+    this.img = img;
+    this.x   = c.x;
+    this.y   = c.y;
+    this.z   = c.z;
+  }
   
   public boolean isResting() {
     return resting;
