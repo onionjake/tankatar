@@ -30,8 +30,8 @@ public class World {
   public static final int TILE_HEIGHT = 80;
 
   // In tiles
-  public static final int WORLD_WIDTH = 20;
-  public static final int WORLD_HEIGHT = 20;
+  public static final int WORLD_WIDTH = 10;
+  public static final int WORLD_HEIGHT = 10;
   public static final int WORLD_TOP_OFFSET = 50;
 
   private ArrayList<Tile> world = new ArrayList<Tile>();
@@ -54,7 +54,7 @@ public class World {
   public Tank newPlayer() {
     ImageLayer foo = graphics().createImageLayer(assets().getImage("redtank.png")); 
     worldLayer.add(foo);
-    Tank bar = new Tank(foo,new Coordinate(10,10,0));
+    Tank bar = new Tank(worldLayer,objects,foo,new Coordinate(10,10,0));
     objects.add(bar);
     player = bar;
     return bar;

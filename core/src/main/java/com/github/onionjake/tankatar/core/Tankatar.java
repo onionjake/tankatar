@@ -39,7 +39,7 @@ public class Tankatar implements Game, Keyboard.Listener {
   private Coordinate touchPosition;
   private World world;
 
-  private boolean controlLeft, controlRight, controlUp, controlDown;
+  private boolean controlLeft, controlRight, controlUp, controlDown, controlSpace;
 
   private ArrayList<Tank> players = new ArrayList<Tank>();
 
@@ -58,15 +58,17 @@ public class Tankatar implements Game, Keyboard.Listener {
       @Override
       public void onPointerEnd(Pointer.Event event) {
         touchVectorX = touchVectorY = 0;
+        //touchPosition = new Coordinate(event.x(),event.y(),0);
       }
       @Override
       public void onPointerDrag(Pointer.Event event) {
         touchMove(event.x(), event.y());
+        touchPosition = new Coordinate(event.x(),event.y(),0);
       }
       @Override
       public void onPointerStart(Pointer.Event event) {
         touchMove(event.x(), event.y());
-        touchPosition = new Coordinate(event.x(),event.y(),0);
+       // touchPosition = new Coordinate(event.x(),event.y(),0);
       }
     });
 
@@ -97,6 +99,8 @@ public class Tankatar implements Game, Keyboard.Listener {
         if (controlDown) {
           t.ay = 50.0;
         }
+        if (controlSpace)
+          players.get(0).shoot(touchPosition);
 
         // Mouse Control.
         t.ax += touchVectorX;
@@ -111,7 +115,7 @@ public class Tankatar implements Game, Keyboard.Listener {
     System.out.println("Key Down");
     switch (event.key()) {
       case SPACE:
-        //players.get(0).shoot(touchPosition);
+        controlSpace = true;
         break;
       case LEFT:
         controlLeft = true;
@@ -147,6 +151,9 @@ public class Tankatar implements Game, Keyboard.Listener {
       case DOWN:
         controlDown = false;
         break;
+      case SPACE:
+        controlSpace = false;
+        break;
     }
   }
 
@@ -154,8 +161,9 @@ public class Tankatar implements Game, Keyboard.Listener {
     float cx = graphics().screenWidth() / 2;
     float cy = graphics().screenHeight() / 2;
 
-    touchVectorX = (x - cx) * 1.0f / cx;
-    touchVectorY = (y - cy) * 1.0f / cy;
+    // Acceleration of touch
+    touchVectorX = (x - cx) * 40.0f / cx;
+    touchVectorY = (y - cy) * 40.0f / cy;
   }
 
   @Override

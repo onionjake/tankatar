@@ -21,6 +21,8 @@ import static playn.core.PlayN.*;
 
 import playn.core.GroupLayer;
 import playn.core.ImageLayer;
+import playn.core.GroupLayer;
+import java.util.ArrayList;
 
 /**
  * Tanks represent players in the game
@@ -28,19 +30,32 @@ import playn.core.ImageLayer;
  */
 public class Tank extends TObject {
   
-  private static double FRICTION = 10.0;
+  public static double FRICTION = 1.0;
   private double health;
   private double score;
-  
+  private GroupLayer worldLayer;
+  private ArrayList<TObject> objects = new ArrayList<TObject>();
+
   /**
+   *
    * Tank Constuctor
    */
-  public Tank(ImageLayer tank, Coordinate c) {
+  public Tank(GroupLayer worldLayer,ArrayList<TObject> objects,ImageLayer tank, Coordinate c) {
     super(tank,c);
+    this.worldLayer = worldLayer;
+    this.objects = objects;
   }
 
-  //public TObject shoot(Coordinate c) {
-  //  return new Bullet(this,c);
-  //}
+  public TObject shoot(Coordinate dest) {
+    ImageLayer image = graphics().createImageLayer(assets().getImage("bullet.png")); 
+    worldLayer.add(image);
+    Bullet b = new Bullet(image,this,dest);
+    objects.add(b);
+    return b;
+  }  
+
+  public static double getFriction() {
+    return FRICTION;
+  }
 }
 

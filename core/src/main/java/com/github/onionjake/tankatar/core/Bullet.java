@@ -24,14 +24,19 @@ import playn.core.ImageLayer;
  * Bullets
  */
 public class Bullet extends TObject {
+  public static double FRICTION = 0.0;
 
   /**
    * Create a bullet for tank with starting position x,y,z
    * @param Tank, x, y, z
    */
-  public Bullet(ImageLayer b, Tank t, Coordinate c) {
+  public Bullet(ImageLayer b, Tank t, Coordinate dest) {
     super(b, new Coordinate(t.x,t.y,t.z));
-    setVelocity(3,3,3);
+   // super(b,dest);
+    setVelocity(-20,0,0);
   }
     
+  public double getFriction() {
+    return FRICTION;
+  }
 }

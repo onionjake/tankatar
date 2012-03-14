@@ -31,7 +31,6 @@ public class TObject {
   public double vx, vy, vz;
   public double ax, ay, az;
   public double r;
-  private static double FRICTION = 1.0;
 
   int lastUpdated;
   boolean resting;
@@ -111,12 +110,17 @@ public class TObject {
   }
 
   public void update(float delta) {
-      vx -= vx * this.FRICTION * delta;
-      //if (vx < 0) vx = 0;
-
-      vy -= vy * this.FRICTION * delta;
-     // if (vy < 0) vy = 0;
-
+    // Friction on TObject
+   //   vx -= vx * this.getFriction() * delta;
+   //   vy -= vy * this.getFriction() * delta;
+   if(this instanceof Tank) {
+      vx -= vx * 1.0 * delta;
+      vy -= vy * 1.0 * delta;
+   }
+   else if(this instanceof Bullet) {
+      vx -= vx * 0.000000005 * delta;
+      vy -= vy * 0.000000005 * delta;
+   }
       if (vz < 0) {
         vz = 0;
       }
@@ -133,8 +137,6 @@ public class TObject {
     if (y > World.TILE_HEIGHT*World.WORLD_HEIGHT + World.WORLD_TOP_OFFSET) y = World.TILE_HEIGHT*World.WORLD_HEIGHT+ World.WORLD_TOP_OFFSET;
     if (x < 0) x = 0;
     if (y < World.WORLD_TOP_OFFSET) y = World.WORLD_TOP_OFFSET;
-
-
 
     updateLayer();
   }
