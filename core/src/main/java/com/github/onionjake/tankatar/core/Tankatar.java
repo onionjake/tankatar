@@ -29,6 +29,7 @@ import playn.core.Pointer;
 import playn.core.Sound;
 import playn.core.Layer.Util;
 import pythagoras.f.AbstractPoint;
+import playn.core.util.Callback;
 
 import java.util.ArrayList;
 
@@ -82,6 +83,29 @@ public class Tankatar implements Game, Keyboard.Listener {
 
     ding = assets().getSound("ding");
 
+    net().post("http://localhost:4567/players/fred", "", new Callback<String>() {
+      @Override
+      public void onSuccess(String json) {
+        System.out.println(json);
+      }
+
+      @Override
+      public void onFailure(Throwable error) {
+        System.err.println("bad request");
+      }
+    });
+
+    net().get("http://localhost:4567/players", new Callback<String>() {
+      @Override
+      public void onSuccess(String json) {
+        System.out.println(json);
+      }
+
+      @Override
+      public void onFailure(Throwable error) {
+        System.err.println("bad request");
+      }
+    });
   }
 
   @Override
