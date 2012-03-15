@@ -27,6 +27,8 @@ import playn.core.ImageLayer;
 import playn.core.Keyboard;
 import playn.core.Pointer;
 import playn.core.Sound;
+import playn.core.Layer.Util;
+import pythagoras.f.AbstractPoint;
 
 import java.util.ArrayList;
 
@@ -39,7 +41,7 @@ public class Tankatar implements Game, Keyboard.Listener {
   private Coordinate touchPosition;
   private World world;
 
-  private boolean controlLeft, controlRight, controlUp, controlDown, controlSpace;
+  private boolean controlLeft, controlRight, controlUp, controlDown, controlShoot;
 
   private ArrayList<Tank> players = new ArrayList<Tank>();
 
@@ -57,18 +59,24 @@ public class Tankatar implements Game, Keyboard.Listener {
     pointer().setListener(new Pointer.Listener() {
       @Override
       public void onPointerEnd(Pointer.Event event) {
-        touchVectorX = touchVectorY = 0;
-        //touchPosition = new Coordinate(event.x(),event.y(),0);
+        //touchVectorX = touchVectorY = 0;
+        pythagoras.f.Point p = Util.screenToLayer(worldLayer, event.x() ,event.y());
+        touchPosition = new Coordinate(p.x,p.y,0);
+        controlShoot = false;
       }
       @Override
       public void onPointerDrag(Pointer.Event event) {
-        touchMove(event.x(), event.y());
-        touchPosition = new Coordinate(event.x(),event.y(),0);
+       // touchMove(event.x(), event.y());
+        pythagoras.f.Point p = Util.screenToLayer(worldLayer, event.x() ,event.y());
+        touchPosition = new Coordinate(p.x,p.y,0);
+        controlShoot = true;
       }
       @Override
       public void onPointerStart(Pointer.Event event) {
-        touchMove(event.x(), event.y());
-       // touchPosition = new Coordinate(event.x(),event.y(),0);
+       // touchMove(event.x(), event.y());
+        pythagoras.f.Point p = Util.screenToLayer(worldLayer, event.x() ,event.y());
+        touchPosition = new Coordinate(p.x,p.y,0);
+        controlShoot = true;
       }
     });
 
@@ -99,7 +107,7 @@ public class Tankatar implements Game, Keyboard.Listener {
         if (controlDown) {
           t.ay = 50.0;
         }
-        if (controlSpace)
+        if (controlShoot)
           players.get(0).shoot(touchPosition);
 
         // Mouse Control.
@@ -115,7 +123,7 @@ public class Tankatar implements Game, Keyboard.Listener {
     System.out.println("Key Down");
     switch (event.key()) {
       case SPACE:
-        controlSpace = true;
+        controlShoot = true;
         break;
       case LEFT:
         controlLeft = true;
@@ -127,6 +135,18 @@ public class Tankatar implements Game, Keyboard.Listener {
         controlRight = true;
         break;
       case DOWN:
+        controlDown = true;
+        break;
+      case A:
+        controlLeft = true;
+        break;
+      case W:
+        controlUp = true;
+        break;
+      case D:
+        controlRight = true;
+        break;
+      case S:
         controlDown = true;
         break;
     }
@@ -152,7 +172,19 @@ public class Tankatar implements Game, Keyboard.Listener {
         controlDown = false;
         break;
       case SPACE:
-        controlSpace = false;
+        controlShoot = false;
+        break;
+      case A:
+        controlLeft = false;
+        break;
+      case W:
+        controlUp = false;
+        break;
+      case D:
+        controlRight = false;
+        break;
+      case S:
+        controlDown = false;
         break;
     }
   }

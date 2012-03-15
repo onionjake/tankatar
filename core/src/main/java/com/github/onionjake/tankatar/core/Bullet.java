@@ -20,11 +20,13 @@ package com.github.onionjake.tankatar.core;
 import static playn.core.PlayN.*;
 
 import playn.core.ImageLayer;
+import java.lang.Math;
 /**
  * Bullets
  */
 public class Bullet extends TObject {
   public static double FRICTION = 0.0;
+  private static double BULLET_VELOCITY = 100;
 
   /**
    * Create a bullet for tank with starting position x,y,z
@@ -32,8 +34,16 @@ public class Bullet extends TObject {
    */
   public Bullet(ImageLayer b, Tank t, Coordinate dest) {
     super(b, new Coordinate(t.x,t.y,t.z));
-   // super(b,dest);
-    setVelocity(-20,0,0);
+
+    // calc velocity components from position tank and dest positions.
+    double xPos = t.x - dest.x, yPos = t.y - dest.y;
+    double ratio = Math.abs(yPos / xPos);
+    double calcX = BULLET_VELOCITY / (1 + ratio); 
+    Math.sqrt(Math.abs(calcX));
+    double calcY = calcX * ratio;
+    if (xPos >= 0) calcX *= -1; 
+    if (yPos >= 0) calcY *= -1; 
+    setVelocity(calcX,calcY,0);
   }
     
   public double getFriction() {

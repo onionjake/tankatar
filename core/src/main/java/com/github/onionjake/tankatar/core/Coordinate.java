@@ -33,5 +33,9 @@ public class Coordinate {
     this.y = y*World.TILE_HEIGHT;
     this.z = 0;
   }
+
+  public void printCoord() {
+    System.out.println("X: " + x + " Y: " + y + " Z: " + z);
+   }
 }
 
