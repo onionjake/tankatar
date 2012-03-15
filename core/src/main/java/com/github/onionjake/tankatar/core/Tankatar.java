@@ -148,7 +148,6 @@ public class Tankatar implements Game, Keyboard.Listener {
 
   @Override
   public void onKeyDown(Keyboard.Event event) {
-    System.out.println("Key Down");
     switch (event.key()) {
       case SPACE:
         controlShoot = true;
