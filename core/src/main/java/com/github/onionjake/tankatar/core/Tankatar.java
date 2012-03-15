@@ -51,6 +51,7 @@ public class Tankatar implements Game, Keyboard.Listener {
 
   @Override
   public void init() {
+    touchPosition = new Coordinate(0,0,0);
 
     worldLayer = graphics().createGroupLayer();
 
