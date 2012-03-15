@@ -22,6 +22,8 @@ import static playn.core.PlayN.*;
 import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
+import playn.core.Json;
+import playn.core.util.Callback;
 
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
@@ -48,6 +50,9 @@ public class TankatarWorld implements ContactListener {
   private ArrayList<Tile> world = new ArrayList<Tile>();
   private ArrayList<TObject> objects = new ArrayList<TObject>();
   Tank player;
+  String playerid;
+  Tank otherplayer;
+  String otherplayerid;
 
   private GroupLayer worldLayer;
 
@@ -55,6 +60,8 @@ public class TankatarWorld implements ContactListener {
   protected World physicsWorld;
 
   public TankatarWorld(GroupLayer worldLayer) {
+    playerid = "";
+    otherplayerid = "";
     this.worldLayer = worldLayer;
     for(int i=0;i<WORLD_WIDTH;i++) {
       for(int j=0;j<WORLD_WIDTH;j++) {
@@ -72,19 +79,69 @@ public class TankatarWorld implements ContactListener {
   }
 
   public Tank newPlayer() {
-    ImageLayer foo = graphics().createImageLayer(assets().getImage("redtank.png")); 
-    worldLayer.add(foo);
-    Tank bar = new Tank(worldLayer,objects,foo,new Coordinate(10,10,0));
-    objects.add(bar);
-    player = bar;
-    return bar;
+    net().get("http://localhost:4567/newplayer", new Callback<String>() {
+      @Override
+      public void onSuccess(String json) {
+        System.out.println(json);
+        Json.Object d = json().parse(json);
+        ImageLayer foo = graphics().createImageLayer(assets().getImage(d.getString("color"))); 
+        worldLayer.add(foo);
+        Tank bar = new Tank(worldLayer,objects,foo,new Coordinate(10,10,0));
+        objects.add(bar);
+        player = bar;
+        playerid = d.getString("player");
+      }
+
+      @Override
+      public void onFailure(Throwable error) {
+        System.err.println("Could not connect to server!  Run in single mode.");
+        ImageLayer foo = graphics().createImageLayer(assets().getImage("redtank.png")); 
+        worldLayer.add(foo);
+        Tank bar = new Tank(worldLayer,objects,foo,new Coordinate(10,10,0));
+        objects.add(bar);
+        player = bar;
+      }
+    });
+    return player;
   }
 
   public void update(float delta) {
     worldLayer.setTranslation(-(float)player.x+320, -(float)player.y + 240 );
+
     for (TObject t:objects) {
       t.update(delta);
     }
+    String pos = "{ \"posx\": " + player.x + ", \"posy\": " + player.y + "}";
+
+    net().post("http://localhost:4567/update/" + playerid, pos, new Callback<String>() {
+      @Override
+      public void onSuccess(String json) {
+        System.out.println(json);
+        Json.Array d = json().parseArray(json);
+        if (d.length() == 0) return;
+        Json.Object p;
+        if (otherplayerid == "") {
+          if (playerid == "player1") {
+            otherplayerid = "player2";
+          }
+          else {
+            otherplayerid = "player1";
+          }
+          p = d.getObject(0);
+          ImageLayer foo = graphics().createImageLayer(assets().getImage(p.getString("color"))); 
+          worldLayer.add(foo);
+          otherplayer = new Tank(worldLayer,objects,foo,new Coordinate(0,0,0));
+          objects.add(otherplayer);
+        }
+        p = d.getObject(0);
+        otherplayer.setPos(p.getNumber("posx"),p.getNumber("posy"),0);
+      }
+
+      @Override
+      public void onFailure(Throwable error) {
+        System.err.println("bad request");
+      }
+    });
   }
 
 @Override
