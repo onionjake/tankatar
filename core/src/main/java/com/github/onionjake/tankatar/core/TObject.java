@@ -133,10 +133,18 @@ public class TObject {
     z += vz * delta;
 
     // Don't let them go off the edge
-    if (x > World.TILE_WIDTH*World.WORLD_WIDTH) x = World.TILE_WIDTH*World.WORLD_WIDTH;
-    if (y > World.TILE_HEIGHT*World.WORLD_HEIGHT + World.WORLD_TOP_OFFSET) y = World.TILE_HEIGHT*World.WORLD_HEIGHT+ World.WORLD_TOP_OFFSET;
-    if (x < 0) x = 0;
-    if (y < World.WORLD_TOP_OFFSET) y = World.WORLD_TOP_OFFSET;
+    if (x > TankatarWorld.TILE_WIDTH*TankatarWorld.WORLD_WIDTH){
+      x = TankatarWorld.TILE_WIDTH*TankatarWorld.WORLD_WIDTH;
+    }
+    if (y > TankatarWorld.TILE_HEIGHT*TankatarWorld.WORLD_HEIGHT + TankatarWorld.WORLD_TOP_OFFSET) {
+      y = TankatarWorld.TILE_HEIGHT*TankatarWorld.WORLD_HEIGHT+ TankatarWorld.WORLD_TOP_OFFSET;
+    }
+    if (x < 0) {
+      x = 0;
+    }
+    if (y < TankatarWorld.WORLD_TOP_OFFSET) {
+      y = TankatarWorld.WORLD_TOP_OFFSET;
+    }
 
     updateLayer();
   }

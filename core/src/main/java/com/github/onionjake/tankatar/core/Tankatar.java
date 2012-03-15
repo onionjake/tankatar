@@ -31,6 +31,8 @@ import playn.core.Layer.Util;
 import pythagoras.f.AbstractPoint;
 import playn.core.util.Callback;
 
+import org.jbox2d.dynamics.World;
+import org.jbox2d.common.Vec2;
 import java.util.ArrayList;
 
 public class Tankatar implements Game, Keyboard.Listener {
@@ -40,7 +42,8 @@ public class Tankatar implements Game, Keyboard.Listener {
   private float touchVectorX, touchVectorY;
   private GroupLayer worldLayer;
   private Coordinate touchPosition;
-  private World world;
+  private TankatarWorld world;
+
 
   private boolean controlLeft, controlRight, controlUp, controlDown, controlShoot;
 
@@ -51,7 +54,7 @@ public class Tankatar implements Game, Keyboard.Listener {
 
     worldLayer = graphics().createGroupLayer();
 
-    world = new World(worldLayer);
+    world = new TankatarWorld(worldLayer);
     players.add(world.newPlayer());
     
     graphics().rootLayer().add(worldLayer);
