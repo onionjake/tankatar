@@ -29,8 +29,8 @@ public class Coordinate {
 
   // From tiles
   public Coordinate(int x, int y) {
-    this.x = x*World.TILE_WIDTH;
-    this.y = y*World.TILE_HEIGHT;
+    this.x = x*TankatarWorld.TILE_WIDTH;
+    this.y = y*TankatarWorld.TILE_HEIGHT;
     this.z = 0;
   }
 
