@@ -14,48 +14,156 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with tankatar.  See gpl3.txt. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package com.github.onionjake.tankatar.core;
 
 import static playn.core.PlayN.*;
 
 import playn.core.GroupLayer;
+import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.GroupLayer;
+
 import java.util.ArrayList;
+
+import org.jbox2d.collision.shapes.CircleShape;
+import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.BodyDef;
+import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.FixtureDef;
+import org.jbox2d.dynamics.World;
 
 /**
  * Tanks represent players in the game
  * Properties: health, score
  */
-public class Tank extends TObject {
-  
-  public static double FRICTION = 1.0;
-  private double health;
-  private double score;
-  private GroupLayer worldLayer;
-  private ArrayList<TObject> objects = new ArrayList<TObject>();
+public class Tank extends DynamicPhysicsEntity {
 
-  /**
-   *
-   * Tank Constuctor
-   */
-  public Tank(GroupLayer worldLayer,ArrayList<TObject> objects,ImageLayer tank, Coordinate c) {
-    super(tank,c);
-    this.worldLayer = worldLayer;
-    this.objects = objects;
-  }
+	public static double FRICTION = 1.0;
+	private double health;
+	private double score;
+	private GroupLayer worldLayer;
+	private ArrayList<TObject> objects = new ArrayList<TObject>();
+	public double ax,ay;
+	public Coordinate c;
 
-  public TObject shoot(Coordinate dest) {
+	/**
+	 *
+	 * Tank Constuctor
+	 */
+	public Tank(TankatarWorld tankatarWorld, World world, float x, float y, float angle) {
+		super(tankatarWorld, world, x, y, angle);
+		ax =0;
+		ay = 0;
+	}
+
+	@Override
+	Body initPhysicsBody(World world, float x, float y, float angle) {
+		this.x = x;
+		this.y = y;
+		z = 0;
+		c = new Coordinate(x,y,z);
+		FixtureDef fixtureDef = new FixtureDef();
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.type = BodyType.DYNAMIC;
+		bodyDef.position = new Vec2(0, 0);
+		Body body = world.createBody(bodyDef);
+
+		CircleShape circleShape = new CircleShape();
+		circleShape.m_radius = getRadius();
+		fixtureDef.shape = circleShape;
+		fixtureDef.density = 0.4f;
+		fixtureDef.friction = 0.1f;
+		fixtureDef.restitution = 0.35f;
+		circleShape.m_p.set(0, 0);
+		body.createFixture(fixtureDef);
+		body.setLinearDamping(0.2f);
+		body.setTransform(new Vec2(x, y), angle);
+		return body;
+	}
+
+
+	/*
+public TObject shoot(Coordinate dest) {
     ImageLayer image = graphics().createImageLayer(assets().getImage("bullet.png")); 
     worldLayer.add(image);
-    Bullet b = new Bullet(image,this,dest);
+   // Bullet b = new Bullet(image,this,dest);
     objects.add(b);
     return b;
   }  
+	 */
+	public static double getFriction() {
+		return FRICTION;
+	}
 
-  public static double getFriction() {
-    return FRICTION;
-  }
+	@Override
+	public void update(float delta) {
+		super.update(delta);
+		if (this == null)return;
+		float vx = getBody().getLinearVelocity().x;
+		float vy = getBody().getLinearVelocity().y;
+		// Friction on TObject
+		vx -= vx * this.getFriction() * delta;
+		vy -= vy * this.getFriction() * delta;
+		//  if(this instanceof Tank) {
+		//     vx -= vx * 1.0 * delta;
+		//      vy -= vy * 1.0 * delta;
+		//   }
+
+
+
+		vx += ax *2* delta;
+		vy += ay *2* delta;
+		Vec2 v = new Vec2(vx,vy);
+		this.getBody().setLinearVelocity(v);
+
+		x += vx * delta;
+		y += vy * delta;
+		c = new Coordinate(x,y,z);
+		// z += vz * delta;
+
+		// Don't let them go off the edge
+		/*if (x > TankatarWorld.TILE_WIDTH*TankatarWorld.WORLD_WIDTH){
+	      x = TankatarWorld.TILE_WIDTH*TankatarWorld.WORLD_WIDTH;
+	    }
+	    if (y > TankatarWorld.TILE_HEIGHT*TankatarWorld.WORLD_HEIGHT + TankatarWorld.WORLD_TOP_OFFSET) {
+	      y = TankatarWorld.TILE_HEIGHT*TankatarWorld.WORLD_HEIGHT+ TankatarWorld.WORLD_TOP_OFFSET;
+	    }
+	    if (x < 0) {
+	      x = 0;
+	    }
+	    if (y < TankatarWorld.WORLD_TOP_OFFSET) {
+	      y = TankatarWorld.WORLD_TOP_OFFSET;
+	    }*/
+
+		updateLayer();
+	}
+
+	private void updateLayer()
+	{
+		img.setTranslation((float)x,(float)y);
+	}
+
+
+	@Override
+	float getWidth() {
+		return 2 * getRadius();
+	}
+
+	@Override
+	float getHeight() {
+		return 2 * getRadius();
+	}
+
+	private float getRadius() {
+		return 10f;
+	}
+
+	@Override
+	public Image getImage() {
+		return image;
+	}
+	private static Image image = loadImage("redtank.png");
 }
 

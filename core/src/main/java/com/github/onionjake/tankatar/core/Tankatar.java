@@ -14,7 +14,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with tankatar.  See gpl3.txt. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package com.github.onionjake.tankatar.core;
 
 import static playn.core.PlayN.*;
@@ -36,173 +36,189 @@ import org.jbox2d.common.Vec2;
 import java.util.ArrayList;
 
 public class Tankatar implements Game, Keyboard.Listener {
+	// scale difference between screen space (pixels) and world space (physics).
+	public static float physUnitPerScreenUnit = 1 / 26.666667f;
 
-  private Sound ding;
-  private float frameAlpha;
-  private float touchVectorX, touchVectorY;
-  private GroupLayer worldLayer;
-  private Coordinate touchPosition;
-  private TankatarWorld world;
+	private Sound ding;
+	private float frameAlpha;
+	private float touchVectorX, touchVectorY;
+	private GroupLayer worldLayer;
+	private Coordinate touchPosition;
+	private TankatarWorld world;
 
 
-  private boolean controlLeft, controlRight, controlUp, controlDown, controlShoot;
+	private boolean controlLeft, controlRight, controlUp, controlDown, controlShoot;
 
-  private ArrayList<Tank> players = new ArrayList<Tank>();
+	private ArrayList<Tank> players = new ArrayList<Tank>();
 
-  @Override
-  public void init() {
-    touchPosition = new Coordinate(0,0,0);
+	@Override
+	public void init() {
+		touchPosition = new Coordinate(0,0,0);
 
-    worldLayer = graphics().createGroupLayer();
+		worldLayer = graphics().createGroupLayer();
+		//worldLayer.setScale(1f / physUnitPerScreenUnit);
+		world = new TankatarWorld(worldLayer);
 
-    world = new TankatarWorld(worldLayer);
-    players.add(world.newPlayer());
-    
-    graphics().rootLayer().add(worldLayer);
+		graphics().rootLayer().add(worldLayer);
+		Tank tank = world.newPlayer(100,100);
+		players.add(tank);
+		world.setPlayer(tank);
 
-    keyboard().setListener(this);
-    pointer().setListener(new Pointer.Listener() {
-      @Override
-      public void onPointerEnd(Pointer.Event event) {
-        //touchVectorX = touchVectorY = 0;
-        pythagoras.f.Point p = Util.screenToLayer(worldLayer, event.x() ,event.y());
-        touchPosition = new Coordinate(p.x,p.y,0);
-        controlShoot = false;
-      }
-      @Override
-      public void onPointerDrag(Pointer.Event event) {
-       // touchMove(event.x(), event.y());
-        pythagoras.f.Point p = Util.screenToLayer(worldLayer, event.x() ,event.y());
-        touchPosition = new Coordinate(p.x,p.y,0);
-        controlShoot = true;
-      }
-      @Override
-      public void onPointerStart(Pointer.Event event) {
-       // touchMove(event.x(), event.y());
-        pythagoras.f.Point p = Util.screenToLayer(worldLayer, event.x() ,event.y());
-        touchPosition = new Coordinate(p.x,p.y,0);
-        controlShoot = true;
-      }
-    });
+		keyboard().setListener(this);
+		pointer().setListener(new Pointer.Listener() {
+			@Override
+			public void onPointerEnd(Pointer.Event event) {
+				//touchVectorX = touchVectorY = 0;
+				pythagoras.f.Point p = Util.screenToLayer(worldLayer, event.x() ,event.y());
+				touchPosition = new Coordinate(p.x,p.y,0);
+				controlShoot = false;
+			}
+			@Override
+			public void onPointerDrag(Pointer.Event event) {
+				// touchMove(event.x(), event.y());
+				pythagoras.f.Point p = Util.screenToLayer(worldLayer, event.x() ,event.y());
+				touchPosition = new Coordinate(p.x,p.y,0);
+				controlShoot = true;
+			}
+			@Override
+			public void onPointerStart(Pointer.Event event) {
 
-    ding = assets().getSound("ding");
-  }
+				// touchMove(event.x(), event.y());
+				pythagoras.f.Point p = Util.screenToLayer(worldLayer, event.x() ,event.y());
+				touchPosition = new Coordinate(p.x,p.y,0);
+				controlShoot = true;
+				world.newPea(p.x,p.y);
 
-  @Override
-  public void paint(float alpha) {
-  }
+			}
+		});
+	}
 
-  @Override
-  public void update(float delta) {
-    for (Tank t:players) {
-      t.setAcceleration(0,0,0);
+	public Tank getPlayer() {
+		if(!players.isEmpty())
+			return players.get(0);
+		else 
+			return null;
+	}
 
-      if (t.isResting()) {
-        // Keyboard control.
-        if (controlLeft) {
-          t.ax = -50.0;
-        }
-        if (controlRight) {
-          t.ax = 50.0;
-        }
-        if (controlUp) {
-          t.ay = -50.0;
-        }
-        if (controlDown) {
-          t.ay = 50.0;
-        }
-        if (controlShoot)
-          players.get(0).shoot(touchPosition);
+	@Override
+	public void paint(float alpha) {
+		world.paint(alpha);
+	}
 
-        // Mouse Control.
-        t.ax += touchVectorX;
-        t.ay += touchVectorY;
-      }
-    }
-    world.update(delta/100);
-  }
+	@Override
+	public void update(float delta) {
+		if(!players.isEmpty()) {
+			for (Tank t:players) {
+				//t.setAcceleration(0,0,0);
+				t.ax=0;t.ay=0;
+				//if (t.isResting()) {
+				// Keyboard control.
+				if (controlLeft) {
+					t.ax = -50.0;
+				}
+				if (controlRight) {
+					t.ax = 50.0;
+				}
+				if (controlUp) {
+					t.ay = -50.0;
+				}
+				if (controlDown) {
+					t.ay = 50.0;
+				}
+				if (controlShoot)
+					//			players.get(0).shoot(touchPosition);
 
-  @Override
-  public void onKeyDown(Keyboard.Event event) {
-    switch (event.key()) {
-      case SPACE:
-        controlShoot = true;
-        break;
-      case LEFT:
-        controlLeft = true;
-        break;
-      case UP:
-        controlUp = true;
-        break;
-      case RIGHT:
-        controlRight = true;
-        break;
-      case DOWN:
-        controlDown = true;
-        break;
-      case A:
-        controlLeft = true;
-        break;
-      case W:
-        controlUp = true;
-        break;
-      case D:
-        controlRight = true;
-        break;
-      case S:
-        controlDown = true;
-        break;
-    }
-  }
+					// Mouse Control.
+					t.ax += touchVectorX;
+				t.ay += touchVectorY;
+				t.c.printCoord();
+			}
+		}
+		
+		world.update(delta/100);
+	}
 
-  @Override
-  public void onKeyTyped(Keyboard.TypedEvent event) {
-  }
+	@Override
+	public void onKeyDown(Keyboard.Event event) {
+		switch (event.key()) {
+		case SPACE:
+			controlShoot = true;
+			break;
+		case LEFT:
+			controlLeft = true;
+			break;
+		case UP:
+			controlUp = true;
+			break;
+		case RIGHT:
+			controlRight = true;
+			break;
+		case DOWN:
+			controlDown = true;
+			break;
+		case A:
+			controlLeft = true;
+			break;
+		case W:
+			controlUp = true;
+			break;
+		case D:
+			controlRight = true;
+			break;
+		case S:
+			controlDown = true;
+			break;
+		}
+	}
 
-  @Override
-  public void onKeyUp(Keyboard.Event event) {
-    switch (event.key()) {
-      case LEFT:
-        controlLeft = false;
-        break;
-      case UP:
-        controlUp = false;
-        break;
-      case RIGHT:
-        controlRight = false;
-        break;
-      case DOWN:
-        controlDown = false;
-        break;
-      case SPACE:
-        controlShoot = false;
-        break;
-      case A:
-        controlLeft = false;
-        break;
-      case W:
-        controlUp = false;
-        break;
-      case D:
-        controlRight = false;
-        break;
-      case S:
-        controlDown = false;
-        break;
-    }
-  }
+	@Override
+	public void onKeyTyped(Keyboard.TypedEvent event) {
+	}
 
-  private void touchMove(float x, float y) {
-    float cx = graphics().screenWidth() / 2;
-    float cy = graphics().screenHeight() / 2;
+	@Override
+	public void onKeyUp(Keyboard.Event event) {
+		switch (event.key()) {
+		case LEFT:
+			controlLeft = false;
+			break;
+		case UP:
+			controlUp = false;
+			break;
+		case RIGHT:
+			controlRight = false;
+			break;
+		case DOWN:
+			controlDown = false;
+			break;
+		case SPACE:
+			controlShoot = false;
+			break;
+		case A:
+			controlLeft = false;
+			break;
+		case W:
+			controlUp = false;
+			break;
+		case D:
+			controlRight = false;
+			break;
+		case S:
+			controlDown = false;
+			break;
+		}
+	}
 
-    // Acceleration of touch
-    touchVectorX = (x - cx) * 40.0f / cx;
-    touchVectorY = (y - cy) * 40.0f / cy;
-  }
+	private void touchMove(float x, float y) {
+		float cx = graphics().screenWidth() / 2;
+		float cy = graphics().screenHeight() / 2;
 
-  @Override
-  public int updateRate() {
-    return 25;
-  }
+		// Acceleration of touch
+		touchVectorX = (x - cx) * 40.0f / cx;
+		touchVectorY = (y - cy) * 40.0f / cy;
+	}
+
+	@Override
+	public int updateRate() {
+		return 25;
+	}
 }
