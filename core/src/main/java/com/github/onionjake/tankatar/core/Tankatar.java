@@ -87,7 +87,7 @@ public class Tankatar implements Game, Keyboard.Listener {
 				pythagoras.f.Point p = Util.screenToLayer(worldLayer, event.x() ,event.y());
 				touchPosition = new Coordinate(p.x,p.y,0);
 				controlShoot = true;
-				world.newPea(p.x,p.y);
+				//world.newPea(p.x,p.y);
 
 			}
 		});
@@ -126,12 +126,17 @@ public class Tankatar implements Game, Keyboard.Listener {
 					t.ay = 50.0;
 				}
 				if (controlShoot)
-					//			players.get(0).shoot(touchPosition);
+          if(t.bulletDelay == 10)
+					  world.add(players.get(0).shoot(touchPosition));
 
+        if (t.bulletDelay == 20)
+          t.bulletDelay = 0;
+
+        t.bulletDelay++;
 					// Mouse Control.
 					t.ax += touchVectorX;
 				t.ay += touchVectorY;
-				t.c.printCoord();
+			//	t.c.printCoord();
 			}
 		}
 		

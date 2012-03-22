@@ -66,7 +66,8 @@ public class TankatarWorld implements ContactListener {
 	public GroupLayer staticLayerBack;
 	public GroupLayer dynamicLayer;
 	public GroupLayer staticLayerFront;
-	private GroupLayer worldLayer;
+	public GroupLayer worldLayer;
+	public GroupLayer scaledLayer;
 
 	// box2d object containing physics world
 	protected World physicsWorld;
@@ -82,7 +83,7 @@ public class TankatarWorld implements ContactListener {
 		scaledLayer.add(dynamicLayer);
 		staticLayerFront = graphics().createGroupLayer();
 		scaledLayer.add(staticLayerFront);
-
+    this.scaledLayer = scaledLayer;
 		for(int i=0;i<WORLD_WIDTH;i++) {
 			for(int j=0;j<WORLD_WIDTH;j++) {
 				ImageLayer l = graphics().createImageLayer(assets().getImage("block_grass.png"));
@@ -121,7 +122,7 @@ public class TankatarWorld implements ContactListener {
 
 	public Tank newPlayer(float x, float y) {
 		Tank bar = new Tank(this, physicsWorld, x, y, 0);
-
+/*
 		net().get("http://localhost:4567/newplayer", new Callback<String>() {
 			@Override
 			public void onSuccess(String json) {
@@ -144,12 +145,12 @@ public class TankatarWorld implements ContactListener {
 				objects.add(bar);
 				player = bar;
 			}
-		});
-		return player;
+		});*/
+		//return player;
 		//ImageLayer foo = graphics().createImageLayer(assets().getImage("redtank.png")); 
 		//worldLayer.add(foo);
-		//add(bar);
-		//return bar;
+		add(bar);
+		return bar;
 	}
 
 	public Pea newPea(float x, float y) {
@@ -167,7 +168,7 @@ public class TankatarWorld implements ContactListener {
 	}
 
 	public void update(float delta) {
-		worldLayer.setTranslation(-player.x+320, -player.y + 240 );
+	//	worldLayer.setTranslation(-player.x+320, -player.y + 240 );
 		for (TObject t:objects) {
 			t.update(delta); 
 		}
@@ -176,7 +177,7 @@ public class TankatarWorld implements ContactListener {
 		processContacts();
 		
 		String pos = "{ \"posx\": " + player.x + ", \"posy\": " + player.y + "}";
-
+/*
 		net().post("http://localhost:4567/update/" + playerid, pos, new Callback<String>() {
 			@Override
 			public void onSuccess(String json) {
@@ -205,7 +206,7 @@ public class TankatarWorld implements ContactListener {
 			public void onFailure(Throwable error) {
 				System.err.println("bad request");
 			}
-		});
+		});*/
 	}
 
 	public void paint(float delta) {

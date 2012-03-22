@@ -23,6 +23,8 @@ import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.GroupLayer;
+import pythagoras.f.AbstractPoint;
+import playn.core.Layer.Util;
 
 import java.util.ArrayList;
 
@@ -47,7 +49,9 @@ public class Tank extends DynamicPhysicsEntity {
 	private ArrayList<TObject> objects = new ArrayList<TObject>();
 	public double ax,ay;
 	public Coordinate c;
-
+  public TankatarWorld tankatarWorld;
+  public World world;
+  public int bulletDelay = 0;
 	/**
 	 *
 	 * Tank Constuctor
@@ -56,6 +60,8 @@ public class Tank extends DynamicPhysicsEntity {
 		super(tankatarWorld, world, x, y, angle);
 		ax =0;
 		ay = 0;
+    this.world = world;
+    this.tankatarWorld = tankatarWorld;
 	}
 
 	@Override
@@ -63,7 +69,7 @@ public class Tank extends DynamicPhysicsEntity {
 		this.x = x;
 		this.y = y;
 		z = 0;
-		c = new Coordinate(x,y,z);
+		c = new Coordinate((double)x,(double)y,(double)z);
 		FixtureDef fixtureDef = new FixtureDef();
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DYNAMIC;
@@ -84,15 +90,12 @@ public class Tank extends DynamicPhysicsEntity {
 	}
 
 
-	/*
+	
 public TObject shoot(Coordinate dest) {
-    ImageLayer image = graphics().createImageLayer(assets().getImage("bullet.png")); 
-    worldLayer.add(image);
-   // Bullet b = new Bullet(image,this,dest);
-    objects.add(b);
+    Bullet  b = new Bullet(tankatarWorld,world,getBody().getPosition().x+35,getBody().getPosition().y+35,0,dest);
     return b;
   }  
-	 */
+	 
 	public static double getFriction() {
 		return FRICTION;
 	}
