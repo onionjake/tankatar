@@ -92,15 +92,8 @@ public class TankatarWorld implements ContactListener {
 		physicsWorld.setWarmStarting(true);
 		physicsWorld.setAutoClearForces(true);
 		physicsWorld.setContactListener(this);
-    // what is foo?
 		Tile foo = new Tile(this, physicsWorld,200, 100 , 0);
 		add(foo);
-		// create the ground
-		Body ground = physicsWorld.createBody(new BodyDef());
-		PolygonShape groundShape = new PolygonShape();
-		groundShape.setAsEdge(new Vec2(0, getHeight()), new Vec2(getWidth(), getHeight()));
-		ground.createFixture(groundShape, 0.0f);
-
 		// create the walls
 		Body wallLeft = physicsWorld.createBody(new BodyDef());
 		PolygonShape wallLeftShape = new PolygonShape();
@@ -118,10 +111,6 @@ public class TankatarWorld implements ContactListener {
 		PolygonShape wallBottomShape = new PolygonShape();
 		wallBottomShape.setAsEdge(new Vec2(0,getHeight() ), new Vec2(getWidth(), getHeight()));
 		wallBottom.createFixture(wallBottomShape, 0.0f);
-
-
-
-
 	}
 
   public static int getHeight() {
@@ -164,12 +153,16 @@ public class TankatarWorld implements ContactListener {
 		processContacts();
 		
 		String pos = "{ \"posx\": " + player.x + ", \"posy\": " + player.y + "}";
+    // Screen size
+    worldLayer.setTranslation(-player.x + 320, -player.y + 240);
 	}
 
 	public void paint(float delta) {
 		for (TObject t : objects) {
 			t.paint(delta);
 		}
+    // Screen size
+    worldLayer.setTranslation(-player.x + 320, -player.y + 240);
 	}
 
 	public void add(TObject entity) {

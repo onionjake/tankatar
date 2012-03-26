@@ -65,7 +65,6 @@ public class Tankatar implements Game, Keyboard.Listener {
 		pointer().setListener(new Pointer.Listener() {
 			@Override
 			public void onPointerEnd(Pointer.Event event) {
-				//touchVectorX = touchVectorY = 0;
 				pythagoras.f.Point p = Util.screenToLayer(worldLayer, event.x() ,event.y());
 				touchPosition = new Coordinate(p.x,p.y,0);
 				controlShoot = false;

@@ -124,22 +124,6 @@ public TObject shoot(Coordinate dest) {
 		x += vx * delta;
 		y += vy * delta;
 		c = new Coordinate(x,y,z);
-		// z += vz * delta;
-
-		// Don't let them go off the edge
-		/*if (x > TankatarWorld.TILE_WIDTH*TankatarWorld.WORLD_WIDTH){
-	      x = TankatarWorld.TILE_WIDTH*TankatarWorld.WORLD_WIDTH;
-	    }
-	    if (y > TankatarWorld.TILE_HEIGHT*TankatarWorld.WORLD_HEIGHT + TankatarWorld.WORLD_TOP_OFFSET) {
-	      y = TankatarWorld.TILE_HEIGHT*TankatarWorld.WORLD_HEIGHT+ TankatarWorld.WORLD_TOP_OFFSET;
-	    }
-	    if (x < 0) {
-	      x = 0;
-	    }
-	    if (y < TankatarWorld.WORLD_TOP_OFFSET) {
-	      y = TankatarWorld.WORLD_TOP_OFFSET;
-	    }*/
-
 		updateLayer();
 	}
 

@@ -41,8 +41,9 @@ public abstract class DynamicPhysicsEntity extends TObject implements PhysicsEnt
   @Override
   public void paint(float alpha) {
     // interpolate based on previous state
-    float x = (body.getPosition().x * alpha) + (prevX * (1f - alpha));
-    float y = (body.getPosition().y * alpha) + (prevY * (1f - alpha));
+    // TODO: not sure if this is the best place to set the TObject x and y
+    x = (body.getPosition().x * alpha) + (prevX * (1f - alpha));
+    y = (body.getPosition().y * alpha) + (prevY * (1f - alpha));
     float a = (body.getAngle() * alpha) + (prevA * (1f - alpha));
     img.setTranslation(x, y);
     img.setRotation(a);
@@ -51,6 +52,8 @@ public abstract class DynamicPhysicsEntity extends TObject implements PhysicsEnt
   @Override
   public void update(float delta) {
     // store state for interpolation in paint()
+    x = body.getPosition().x;
+    y = body.getPosition().y;
     prevX = body.getPosition().x;
     prevY = body.getPosition().y;
     prevA = body.getAngle();

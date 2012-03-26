@@ -41,7 +41,6 @@ public abstract class TObject {
 				img.setWidth(image.width());
 				img.setHeight(image.height());
 				img.setOrigin(image.width() / 2f, image.height() / 2f);
-				img.setScale(getWidth() / image.width(), getHeight() / image.height());
 				img.setTranslation(x, y);
 				img.setRotation(angle);
 			}
@@ -70,7 +69,7 @@ public abstract class TObject {
 
 	private void updateLayer()
 	{
-		img.setTranslation((float)x,(float)y);
+		img.setTranslation(x,y);
 	}
 
 
