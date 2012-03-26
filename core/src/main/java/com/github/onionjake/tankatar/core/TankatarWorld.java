@@ -49,10 +49,6 @@ public class TankatarWorld implements ContactListener {
 	public static final int WORLD_WIDTH = 10;
 	public static final int WORLD_HEIGHT = 10;
 	public static final int WORLD_TOP_OFFSET = 50;
-	// size of world 
-  // which world is this?
-	private static int width = 24;
-	private static int height = 18;
 
 	private HashMap<Body, PhysicsEntity> bodyEntityLUT = new HashMap<Body, PhysicsEntity>();
 	private Stack<Contact> contacts = new Stack<Contact>();
@@ -102,23 +98,38 @@ public class TankatarWorld implements ContactListener {
 		// create the ground
 		Body ground = physicsWorld.createBody(new BodyDef());
 		PolygonShape groundShape = new PolygonShape();
-		groundShape.setAsEdge(new Vec2(0, height), new Vec2(width, height));
+		groundShape.setAsEdge(new Vec2(0, getHeight()), new Vec2(getWidth(), getHeight()));
 		ground.createFixture(groundShape, 0.0f);
 
 		// create the walls
 		Body wallLeft = physicsWorld.createBody(new BodyDef());
 		PolygonShape wallLeftShape = new PolygonShape();
-		wallLeftShape.setAsEdge(new Vec2(0, 0), new Vec2(0, height));
+		wallLeftShape.setAsEdge(new Vec2(0, 0), new Vec2(0, getHeight()));
 		wallLeft.createFixture(wallLeftShape, 0.0f);
 		Body wallRight = physicsWorld.createBody(new BodyDef());
 		PolygonShape wallRightShape = new PolygonShape();
-		wallRightShape.setAsEdge(new Vec2(width, 0), new Vec2(width, height));
+		wallRightShape.setAsEdge(new Vec2(getWidth(), 0), new Vec2(getWidth(), getHeight()));
 		wallRight.createFixture(wallRightShape, 0.0f);
+		Body wallTop = physicsWorld.createBody(new BodyDef());
+		PolygonShape wallTopShape = new PolygonShape();
+		wallTopShape.setAsEdge(new Vec2(0, 0), new Vec2(getWidth(),0));
+		wallTop.createFixture(wallTopShape, 0.0f);
+		Body wallBottom = physicsWorld.createBody(new BodyDef());
+		PolygonShape wallBottomShape = new PolygonShape();
+		wallBottomShape.setAsEdge(new Vec2(0,getHeight() ), new Vec2(getWidth(), getHeight()));
+		wallBottom.createFixture(wallBottomShape, 0.0f);
 
 
 
 
 	}
+
+  public static int getHeight() {
+    return WORLD_HEIGHT * TILE_HEIGHT;
+  }
+  public static int getWidth() {
+    return WORLD_WIDTH * TILE_WIDTH;
+  }
 
   public void addDynamicLayer(ImageLayer img) {
     dynamicLayer.add(img);

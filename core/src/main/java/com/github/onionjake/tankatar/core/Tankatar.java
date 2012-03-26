@@ -36,8 +36,6 @@ import org.jbox2d.common.Vec2;
 import java.util.ArrayList;
 
 public class Tankatar implements Game, Keyboard.Listener {
-	// scale difference between screen space (pixels) and world space (physics).
-	public static float physUnitPerScreenUnit = 1 / 26.666667f;
 
 	private Sound ding;
 	private float frameAlpha;
