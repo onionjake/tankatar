@@ -25,9 +25,10 @@ import org.jbox2d.dynamics.World;
 public abstract class StaticPhysicsEntity extends TObject implements PhysicsEntity {
   private Body body;
 
-  public StaticPhysicsEntity(final TankatarWorld tankatarWorld, World world, float x, float y, float angle) {
-    super(tankatarWorld, x, y, angle);
+  public StaticPhysicsEntity(TankatarWorld tankatarWorld, World world, float x, float y, float angle) {
+    super(x, y, angle);
     body = initPhysicsBody(world, x, y, angle);
+    tankatarWorld.addStaticLayerBack(img);
   }
 
   abstract Body initPhysicsBody(World world, float x, float y, float angle);
@@ -38,15 +39,6 @@ public abstract class StaticPhysicsEntity extends TObject implements PhysicsEnti
 
   @Override
   public void update(float delta) {
-  }
-
-  @Override
-  public void initPreLoad(final TankatarWorld tankatarWorld) {
-  }
-
-  @Override
-  public void initPostLoad(final TankatarWorld tankatarWorld) {
-    tankatarWorld.staticLayerBack.add(img);
   }
 
   @Override

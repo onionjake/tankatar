@@ -49,45 +49,44 @@ public class TankatarWorld implements ContactListener {
 	public static final int WORLD_WIDTH = 10;
 	public static final int WORLD_HEIGHT = 10;
 	public static final int WORLD_TOP_OFFSET = 50;
-	// size of world
+	// size of world 
+  // which world is this?
 	private static int width = 24;
 	private static int height = 18;
 
 	private HashMap<Body, PhysicsEntity> bodyEntityLUT = new HashMap<Body, PhysicsEntity>();
 	private Stack<Contact> contacts = new Stack<Contact>();
 
-	private ArrayList<BackgroundTile> world = new ArrayList<BackgroundTile>();
+	private ArrayList<BackgroundTile> backgroundTiles = new ArrayList<BackgroundTile>();
 	private ArrayList<TObject> objects = new ArrayList<TObject>();
 	Tank player;
 	String playerid;
 	Tank otherplayer;
 	String otherplayerid;
 
-	public GroupLayer staticLayerBack;
-	public GroupLayer dynamicLayer;
-	public GroupLayer staticLayerFront;
-	public GroupLayer worldLayer;
-	public GroupLayer scaledLayer;
+	private GroupLayer staticLayerBack;
+	private GroupLayer dynamicLayer;
+	private GroupLayer staticLayerFront;
+	private GroupLayer worldLayer;
 
 	// box2d object containing physics world
 	protected World physicsWorld;
 
-	public TankatarWorld(GroupLayer scaledLayer) {
+	public TankatarWorld(GroupLayer worldLayer) {
 		playerid = "";
 		otherplayerid = "";
 
 		staticLayerBack = graphics().createGroupLayer();
-		scaledLayer.add(staticLayerBack);
-		worldLayer = staticLayerBack;
+		worldLayer.add(staticLayerBack);
 		dynamicLayer = graphics().createGroupLayer();
-		scaledLayer.add(dynamicLayer);
+		worldLayer.add(dynamicLayer);
 		staticLayerFront = graphics().createGroupLayer();
-		scaledLayer.add(staticLayerFront);
-    this.scaledLayer = scaledLayer;
+		worldLayer.add(staticLayerFront);
+    this.worldLayer = worldLayer;
 		for(int i=0;i<WORLD_WIDTH;i++) {
 			for(int j=0;j<WORLD_WIDTH;j++) {
 				ImageLayer l = graphics().createImageLayer(assets().getImage("block_grass.png"));
-				world.add(new BackgroundTile(l, new Coordinate(i,j)));
+				backgroundTiles.add(new BackgroundTile(l, new Coordinate(i,j)));
 				staticLayerBack.add(l);
 			}
 		}
@@ -97,6 +96,7 @@ public class TankatarWorld implements ContactListener {
 		physicsWorld.setWarmStarting(true);
 		physicsWorld.setAutoClearForces(true);
 		physicsWorld.setContactListener(this);
+    // what is foo?
 		Tile foo = new Tile(this, physicsWorld,200, 100 , 0);
 		add(foo);
 		// create the ground
@@ -120,43 +120,20 @@ public class TankatarWorld implements ContactListener {
 
 	}
 
+  public void addDynamicLayer(ImageLayer img) {
+    dynamicLayer.add(img);
+  }
+  public void addStaticLayerBack(ImageLayer img) {
+    staticLayerBack.add(img);
+  }
+
 	public Tank newPlayer(float x, float y) {
 		Tank bar = new Tank(this, physicsWorld, x, y, 0);
-/*
-		net().get("http://localhost:4567/newplayer", new Callback<String>() {
-			@Override
-			public void onSuccess(String json) {
-				System.out.println(json);
-				Json.Object d = json().parse(json);
-				ImageLayer foo = graphics().createImageLayer(assets().getImage(d.getString("color"))); 
-				worldLayer.add(foo);
-				//Tank bar = new Tank(worldLayer,objects,foo,new Coordinate(10,10,0));
-				objects.add(bar);
-				player = bar;
-				playerid = d.getString("player");
-			}
-
-			@Override
-			public void onFailure(Throwable error) {
-				System.err.println("Could not connect to server!  Run in single mode.");
-				ImageLayer foo = graphics().createImageLayer(assets().getImage("redtank.png")); 
-				worldLayer.add(foo);
-				Tank bar = new Tank(worldLayer,objects,foo,new Coordinate(10,10,0));
-				objects.add(bar);
-				player = bar;
-			}
-		});*/
-		//return player;
-		//ImageLayer foo = graphics().createImageLayer(assets().getImage("redtank.png")); 
-		//worldLayer.add(foo);
 		add(bar);
 		return bar;
 	}
 
 	public Pea newPea(float x, float y) {
-		
-		//ImageLayer foo = graphics().createImageLayer(assets().getImage("redtank.png")); 
-		//worldLayer.add(foo);
 		Pea bar = new Pea(this, physicsWorld, x, y, 0);
 		add(bar);
 		return bar;
@@ -168,7 +145,6 @@ public class TankatarWorld implements ContactListener {
 	}
 
 	public void update(float delta) {
-	//	worldLayer.setTranslation(-player.x+320, -player.y + 240 );
 		for (TObject t:objects) {
 			t.update(delta); 
 		}
@@ -177,36 +153,6 @@ public class TankatarWorld implements ContactListener {
 		processContacts();
 		
 		String pos = "{ \"posx\": " + player.x + ", \"posy\": " + player.y + "}";
-/*
-		net().post("http://localhost:4567/update/" + playerid, pos, new Callback<String>() {
-			@Override
-			public void onSuccess(String json) {
-				System.out.println(json);
-				Json.Array d = json().parseArray(json);
-				if (d.length() == 0) return;
-				Json.Object p;
-				if (otherplayerid == "") {
-					if (playerid == "player1") {
-						otherplayerid = "player2";
-					}
-					else {
-						otherplayerid = "player1";
-					}
-					p = d.getObject(0);
-					ImageLayer foo = graphics().createImageLayer(assets().getImage(p.getString("color"))); 
-					worldLayer.add(foo);
-					otherplayer = new Tank(this., physicsWorld,0,0,0);
-					objects.add(otherplayer);
-				}
-				p = d.getObject(0);
-				otherplayer.setPos(p.getNumber("posx"),p.getNumber("posy"));
-			}
-
-			@Override
-			public void onFailure(Throwable error) {
-				System.err.println("bad request");
-			}
-		});*/
 	}
 
 	public void paint(float delta) {

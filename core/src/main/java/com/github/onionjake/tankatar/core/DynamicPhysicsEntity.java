@@ -29,10 +29,11 @@ public abstract class DynamicPhysicsEntity extends TObject implements PhysicsEnt
   private Body body;
 
   public DynamicPhysicsEntity(TankatarWorld tankatarWorld, World world, float x, float y, float angle) {
-    super(tankatarWorld, x, y, angle);
+    super(x, y, angle);
     body = initPhysicsBody(world, x, y, angle);
     setPos(x, y);
     setAngle(angle);
+    tankatarWorld.addDynamicLayer(img);
   }
 
   abstract Body initPhysicsBody(World world, float x, float y, float angle);
@@ -53,16 +54,6 @@ public abstract class DynamicPhysicsEntity extends TObject implements PhysicsEnt
     prevX = body.getPosition().x;
     prevY = body.getPosition().y;
     prevA = body.getAngle();
-  }
-
-  @Override
-  public void initPreLoad(final TankatarWorld tankatarWorld) {
-    // attach our layer to the dynamic layer
-    tankatarWorld.dynamicLayer.add(img);
-  }
-
-  @Override
-  public void initPostLoad(final TankatarWorld tankatarWorld) {
   }
 
   public void setLinearVelocity(float x, float y) {

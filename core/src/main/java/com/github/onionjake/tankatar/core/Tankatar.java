@@ -56,7 +56,6 @@ public class Tankatar implements Game, Keyboard.Listener {
 		touchPosition = new Coordinate(0,0,0);
 
 		worldLayer = graphics().createGroupLayer();
-		//worldLayer.setScale(1f / physUnitPerScreenUnit);
 		world = new TankatarWorld(worldLayer);
 
 		graphics().rootLayer().add(worldLayer);
@@ -134,7 +133,7 @@ public class Tankatar implements Game, Keyboard.Listener {
 
         t.bulletDelay++;
 					// Mouse Control.
-					t.ax += touchVectorX;
+        t.ax += touchVectorX;
 				t.ay += touchVectorY;
 			//	t.c.printCoord();
 			}
