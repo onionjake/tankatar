@@ -50,6 +50,8 @@ public class TankatarWorld implements ContactListener {
 	public static final int WORLD_HEIGHT = 10;
 	public static final int WORLD_TOP_OFFSET = 50;
 
+  public static final float PHYSICS_SCALE = 0.9f;
+
 	private HashMap<Body, PhysicsEntity> bodyEntityLUT = new HashMap<Body, PhysicsEntity>();
 	private Stack<Contact> contacts = new Stack<Contact>();
 
@@ -92,24 +94,24 @@ public class TankatarWorld implements ContactListener {
 		physicsWorld.setWarmStarting(true);
 		physicsWorld.setAutoClearForces(true);
 		physicsWorld.setContactListener(this);
-		Tile foo = new Tile(this, physicsWorld,200, 100 , 0);
-		add(foo);
+		//Tile foo = new Tile(this, physicsWorld,200, 100 , 0);
+		//add(foo);
 		// create the walls
 		Body wallLeft = physicsWorld.createBody(new BodyDef());
 		PolygonShape wallLeftShape = new PolygonShape();
-		wallLeftShape.setAsEdge(new Vec2(0, 0), new Vec2(0, getHeight()));
+		wallLeftShape.setAsEdge(new Vec2(0, 0), new Vec2(0, getHeight()*PHYSICS_SCALE));
 		wallLeft.createFixture(wallLeftShape, 0.0f);
 		Body wallRight = physicsWorld.createBody(new BodyDef());
 		PolygonShape wallRightShape = new PolygonShape();
-		wallRightShape.setAsEdge(new Vec2(getWidth(), 0), new Vec2(getWidth(), getHeight()));
+		wallRightShape.setAsEdge(new Vec2(getWidth()*PHYSICS_SCALE, 0), new Vec2(getWidth()*PHYSICS_SCALE, getHeight()*PHYSICS_SCALE));
 		wallRight.createFixture(wallRightShape, 0.0f);
 		Body wallTop = physicsWorld.createBody(new BodyDef());
 		PolygonShape wallTopShape = new PolygonShape();
-		wallTopShape.setAsEdge(new Vec2(0, 0), new Vec2(getWidth(),0));
+		wallTopShape.setAsEdge(new Vec2(0, 0), new Vec2(getWidth()*PHYSICS_SCALE,0));
 		wallTop.createFixture(wallTopShape, 0.0f);
 		Body wallBottom = physicsWorld.createBody(new BodyDef());
 		PolygonShape wallBottomShape = new PolygonShape();
-		wallBottomShape.setAsEdge(new Vec2(0,getHeight() ), new Vec2(getWidth(), getHeight()));
+		wallBottomShape.setAsEdge(new Vec2(0,getHeight()*PHYSICS_SCALE ), new Vec2(getWidth()*PHYSICS_SCALE, getHeight()*PHYSICS_SCALE));
 		wallBottom.createFixture(wallBottomShape, 0.0f);
 	}
 
@@ -154,7 +156,8 @@ public class TankatarWorld implements ContactListener {
 		
 		String pos = "{ \"posx\": " + player.x + ", \"posy\": " + player.y + "}";
     // Screen size
-    worldLayer.setTranslation(-player.x + 320, -player.y + 240);
+    //worldLayer.setTranslation(-player.x + 320, -player.y + 240);
+    worldLayer.setTranslation(320, 240);
 	}
 
 	public void paint(float delta) {
@@ -162,7 +165,8 @@ public class TankatarWorld implements ContactListener {
 			t.paint(delta);
 		}
     // Screen size
-    worldLayer.setTranslation(-player.x + 320, -player.y + 240);
+    worldLayer.setTranslation(320, 240);
+    //worldLayer.setTranslation(-player.x + 320, -player.y + 240);
 	}
 
 	public void add(TObject entity) {

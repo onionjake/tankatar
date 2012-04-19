@@ -47,7 +47,6 @@ public class Tank extends DynamicPhysicsEntity {
 	private double score;
 	private GroupLayer worldLayer;
 	private ArrayList<TObject> objects = new ArrayList<TObject>();
-	public double ax,ay;
 	public Coordinate c;
   public TankatarWorld tankatarWorld;
   public World world;
@@ -85,7 +84,7 @@ public class Tank extends DynamicPhysicsEntity {
 		circleShape.m_p.set(0, 0);
 		body.createFixture(fixtureDef);
 		body.setLinearDamping(0.2f);
-		body.setTransform(new Vec2(x, y), angle);
+		body.setTransform(new Vec2(x*PHYSICS_SCALE, y*PHYSICS_SCALE), angle*PHYSICS_SCALE);
 		return body;
 	}
 
@@ -104,8 +103,8 @@ public TObject shoot(Coordinate dest) {
 	public void update(float delta) {
 		super.update(delta);
 		if (this == null)return;
-		float vx = getBody().getLinearVelocity().x;
-		float vy = getBody().getLinearVelocity().y;
+		float vx = getBody().getLinearVelocity().x/PHYSICS_SCALE;
+		float vy = getBody().getLinearVelocity().y/PHYSICS_SCALE;
 		// Friction on TObject
 		vx -= vx * this.getFriction() * delta;
 		vy -= vy * this.getFriction() * delta;
@@ -118,19 +117,21 @@ public TObject shoot(Coordinate dest) {
 
 		vx += ax *2* delta;
 		vy += ay *2* delta;
-		Vec2 v = new Vec2(vx,vy);
+		Vec2 v = new Vec2(vx*PHYSICS_SCALE,vy*PHYSICS_SCALE);
 		this.getBody().setLinearVelocity(v);
 
 		x += vx * delta;
 		y += vy * delta;
 		c = new Coordinate(x,y,z);
+    System.out.println(x + " " + y);
+    System.out.println(getBody().getPosition().x + " " + getBody().getPosition().y);
 		updateLayer();
 	}
 
 	private void updateLayer()
 	{
 		img.setTranslation((float)x,(float)y);
-	}
+}
 
 
 	@Override

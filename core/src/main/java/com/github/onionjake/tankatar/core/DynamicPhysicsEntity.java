@@ -25,14 +25,18 @@ import org.jbox2d.dynamics.World;
 
 public abstract class DynamicPhysicsEntity extends TObject implements PhysicsEntity {
   // for calculating interpolation
-  private float prevX, prevY, prevA;
+  public float prevX, prevY, prevA;
   private Body body;
+	public double ax,ay;
+  public static final float PHYSICS_SCALE = 0.9f;
 
   public DynamicPhysicsEntity(TankatarWorld tankatarWorld, World world, float x, float y, float angle) {
     super(x, y, angle);
     body = initPhysicsBody(world, x, y, angle);
     setPos(x, y);
     setAngle(angle);
+    ax=0;
+    ay=0;
     tankatarWorld.addDynamicLayer(img);
   }
 
@@ -42,9 +46,9 @@ public abstract class DynamicPhysicsEntity extends TObject implements PhysicsEnt
   public void paint(float alpha) {
     // interpolate based on previous state
     // TODO: not sure if this is the best place to set the TObject x and y
-    x = (body.getPosition().x * alpha) + (prevX * (1f - alpha));
-    y = (body.getPosition().y * alpha) + (prevY * (1f - alpha));
-    float a = (body.getAngle() * alpha) + (prevA * (1f - alpha));
+    x = (body.getPosition().x * alpha) + (prevX * (1f - alpha))/PHYSICS_SCALE;
+    y = (body.getPosition().y * alpha) + (prevY * (1f - alpha))/PHYSICS_SCALE;
+    float a = (body.getAngle() * alpha) + (prevA * (1f - alpha))/PHYSICS_SCALE;
     img.setTranslation(x, y);
     img.setRotation(a);
   }
@@ -52,25 +56,25 @@ public abstract class DynamicPhysicsEntity extends TObject implements PhysicsEnt
   @Override
   public void update(float delta) {
     // store state for interpolation in paint()
-    x = body.getPosition().x;
-    y = body.getPosition().y;
-    prevX = body.getPosition().x;
-    prevY = body.getPosition().y;
-    prevA = body.getAngle();
+    x = body.getPosition().x/PHYSICS_SCALE;
+    y = body.getPosition().y/PHYSICS_SCALE;
+    prevX = body.getPosition().x/PHYSICS_SCALE;
+    prevY = body.getPosition().y/PHYSICS_SCALE;
+    prevA = body.getAngle()/PHYSICS_SCALE;
   }
 
   public void setLinearVelocity(float x, float y) {
-    body.setLinearVelocity(new Vec2(x, y));
+    body.setLinearVelocity(new Vec2(x*PHYSICS_SCALE, y*PHYSICS_SCALE));
   }
 
   public void setAngularVelocity(float w) {
-    body.setAngularVelocity(w);
+    body.setAngularVelocity(w*PHYSICS_SCALE);
   }
 
   @Override
   public void setPos(float x, float y) {
     super.setPos(x, y);
-    getBody().setTransform(new Vec2(x, y), getBody().getAngle());
+    getBody().setTransform(new Vec2(x*PHYSICS_SCALE, y*PHYSICS_SCALE), getBody().getAngle());
     prevX = x;
     prevY = y;
   }
@@ -78,7 +82,7 @@ public abstract class DynamicPhysicsEntity extends TObject implements PhysicsEnt
   @Override
   public void setAngle(float a) {
     super.setAngle(a);
-    getBody().setTransform(getBody().getPosition(), a);
+    getBody().setTransform(getBody().getPosition(), a*PHYSICS_SCALE);
     prevA = a;
   }
 

@@ -122,10 +122,10 @@ public class Tankatar implements Game, Keyboard.Listener {
 					t.ay = 50.0;
 				}
 				if (controlShoot)
-          if(t.bulletDelay == 10)
+          if(t.bulletDelay == 3)
 					  world.add(players.get(0).shoot(touchPosition));
 
-        if (t.bulletDelay == 20)
+        if (t.bulletDelay == 6)
           t.bulletDelay = 0;
 
         t.bulletDelay++;

@@ -34,7 +34,7 @@ import org.jbox2d.dynamics.World;
  */
 public class Bullet extends DynamicPhysicsEntity {
   public static double FRICTION = 0.0;
-  private static double BULLET_VELOCITY = 100;
+  private static double BULLET_VELOCITY = 1000000;
 	public double ax,ay;
 	public Coordinate c;
   private Vec2 velocity;
@@ -45,9 +45,8 @@ public class Bullet extends DynamicPhysicsEntity {
    */
 	public Bullet(TankatarWorld tankatarWorld, World world, float x, float y, float angle, Coordinate dest) {
 		super(tankatarWorld, world, x, y, angle);
-
 		calcVelocity(x,y,dest);
-		this.getBody().setLinearVelocity(velocity);
+//		setLinearVelocity(velocity);
   }
     
   public void calcVelocity(float x, float y, Coordinate dest) {
@@ -59,9 +58,9 @@ public class Bullet extends DynamicPhysicsEntity {
     double calcY = calcX * ratio;
     if (xPos >= 0) calcX *= -1; 
     if (yPos >= 0) calcY *= -1; 
-//    setVelocity(calcX,calcY,0);
-		velocity = new Vec2((float)calcX*100,(float)calcY*100);
-		this.getBody().setLinearVelocity(velocity);
+    setLinearVelocity((float)calcX,(float)calcY);
+//		velocity = new Vec2((float)calcX,(float)calcY);
+//		this.getBody().setLinearVelocity(velocity);
   } 
 	@Override
 	Body initPhysicsBody(World world, float x, float y, float angle) {
@@ -77,13 +76,13 @@ public class Bullet extends DynamicPhysicsEntity {
 		CircleShape circleShape = new CircleShape();
 		circleShape.m_radius = getRadius();
 		fixtureDef.shape = circleShape;
-		fixtureDef.density = 0.1f;
-		fixtureDef.friction = 0.0f;
-		fixtureDef.restitution = 0.0f;
+	//	fixtureDef.density = 0.1f;
+	//	fixtureDef.friction = 0.0f;
+//		fixtureDef.restitution = 0.0f;
 		circleShape.m_p.set(0, 0);
 		body.createFixture(fixtureDef);
-		body.setLinearDamping(0.0f);
-		body.setTransform(new Vec2(x, y), angle);
+	//	body.setLinearDamping(0.0f);
+		body.setTransform(new Vec2(x*PHYSICS_SCALE, y*PHYSICS_SCALE), angle);
 		return body;
 	}
 
@@ -91,6 +90,12 @@ public class Bullet extends DynamicPhysicsEntity {
 	public void update(float delta) {
 		super.update(delta);
 
+		if (this == null)return;
+		float vx = getBody().getLinearVelocity().x;
+		float vy = getBody().getLinearVelocity().y;
+		vx += ax *2* delta;
+		vy += ay *2* delta;
+    setLinearVelocity(vx,vy);
 	//	getBody().setLinearVelocity(velocity);
 
 
