@@ -105,34 +105,29 @@ public class Tankatar implements Game, Keyboard.Listener {
 	public void update(float delta) {
 		if(!players.isEmpty()) {
 			for (Tank t:players) {
-				//t.setAcceleration(0,0,0);
-				t.ax=0;t.ay=0;
-				//if (t.isResting()) {
-				// Keyboard control.
+        float ax = 0.0f;
+        float ay = 0.0f;
+
 				if (controlLeft) {
-					t.ax = -50.0;
+					ax += -50.0;
 				}
 				if (controlRight) {
-					t.ax = 50.0;
+					ax += 50.0;
 				}
 				if (controlUp) {
-					t.ay = -50.0;
+					ay += -50.0;
 				}
 				if (controlDown) {
-					t.ay = 50.0;
+					ay += 50.0;
 				}
+
+        t.setAcceleration(ax,ay,0);
+
 				if (controlShoot)
-          if(t.bulletDelay == 3)
-					  world.add(players.get(0).shoot(touchPosition));
+          world.add(players.get(0).shoot(touchPosition));
 
-        if (t.bulletDelay == 6)
-          t.bulletDelay = 0;
-
-        t.bulletDelay++;
-					// Mouse Control.
-        t.ax += touchVectorX;
-				t.ay += touchVectorY;
-			//	t.c.printCoord();
+        // Mouse Control.
+        t.setAcceleration(touchVectorX, touchVectorY);
 			}
 		}
 		

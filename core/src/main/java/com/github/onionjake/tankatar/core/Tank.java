@@ -43,14 +43,14 @@ import org.jbox2d.dynamics.World;
 public class Tank extends DynamicPhysicsEntity {
 
 	public static double FRICTION = 1.0;
+
+  private int bulletDelay = 0;
 	private double health;
 	private double score;
 	private GroupLayer worldLayer;
 	private ArrayList<TObject> objects = new ArrayList<TObject>();
-	public Coordinate c;
-  public TankatarWorld tankatarWorld;
-  public World world;
-  public int bulletDelay = 0;
+	private Coordinate c;
+  private World world;
 	/**
 	 *
 	 * Tank Constuctor
@@ -91,7 +91,13 @@ public class Tank extends DynamicPhysicsEntity {
 
 	
 public TObject shoot(Coordinate dest) {
-    Bullet  b = new Bullet(tankatarWorld,world,getBody().getPosition().x+35,getBody().getPosition().y+35,0,dest);
+  Bullet b = null;
+  if(bulletDelay == 3)
+    b = new Bullet(tankatarWorld,world,getBody().getPosition().x+35,getBody().getPosition().y+35,0,dest);
+  if(bulletDelay == 6)
+    bulletDelay = 0;
+
+  bulletDelay++;
     return b;
   }  
 	 
@@ -131,7 +137,7 @@ public TObject shoot(Coordinate dest) {
 	private void updateLayer()
 	{
 		img.setTranslation((float)x,(float)y);
-}
+  }
 
 
 	@Override

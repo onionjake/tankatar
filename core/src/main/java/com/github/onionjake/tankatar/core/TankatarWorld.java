@@ -50,7 +50,7 @@ public class TankatarWorld implements ContactListener {
 	public static final int WORLD_HEIGHT = 10;
 	public static final int WORLD_TOP_OFFSET = 50;
 
-  public static final float PHYSICS_SCALE = 0.9f;
+  public static final float PHYSICS_SCALE = 1.0f;
 
 	private HashMap<Body, PhysicsEntity> bodyEntityLUT = new HashMap<Body, PhysicsEntity>();
 	private Stack<Contact> contacts = new Stack<Contact>();
@@ -81,6 +81,8 @@ public class TankatarWorld implements ContactListener {
 		staticLayerFront = graphics().createGroupLayer();
 		worldLayer.add(staticLayerFront);
     this.worldLayer = worldLayer;
+
+    // draw background
 		for(int i=0;i<WORLD_WIDTH;i++) {
 			for(int j=0;j<WORLD_WIDTH;j++) {
 				ImageLayer l = graphics().createImageLayer(assets().getImage("block_grass.png"));
@@ -88,38 +90,41 @@ public class TankatarWorld implements ContactListener {
 				staticLayerBack.add(l);
 			}
 		}
+
 		// create the physics world
 		Vec2 gravity = new Vec2(0.0f, 0.0f);
 		physicsWorld = new World(gravity, true);
 		physicsWorld.setWarmStarting(true);
 		physicsWorld.setAutoClearForces(true);
 		physicsWorld.setContactListener(this);
+
 		//Tile foo = new Tile(this, physicsWorld,200, 100 , 0);
 		//add(foo);
+
 		// create the walls
 		Body wallLeft = physicsWorld.createBody(new BodyDef());
 		PolygonShape wallLeftShape = new PolygonShape();
-		wallLeftShape.setAsEdge(new Vec2(0, 0), new Vec2(0, getHeight()*PHYSICS_SCALE));
+		wallLeftShape.setAsEdge(new Vec2(0, 0), new Vec2(0, getHeight()));
 		wallLeft.createFixture(wallLeftShape, 0.0f);
 		Body wallRight = physicsWorld.createBody(new BodyDef());
 		PolygonShape wallRightShape = new PolygonShape();
-		wallRightShape.setAsEdge(new Vec2(getWidth()*PHYSICS_SCALE, 0), new Vec2(getWidth()*PHYSICS_SCALE, getHeight()*PHYSICS_SCALE));
+		wallRightShape.setAsEdge(new Vec2(getWidth(), 0), new Vec2(getWidth(), getHeight()));
 		wallRight.createFixture(wallRightShape, 0.0f);
 		Body wallTop = physicsWorld.createBody(new BodyDef());
 		PolygonShape wallTopShape = new PolygonShape();
-		wallTopShape.setAsEdge(new Vec2(0, 0), new Vec2(getWidth()*PHYSICS_SCALE,0));
+		wallTopShape.setAsEdge(new Vec2(0, 0), new Vec2(getWidth(),0));
 		wallTop.createFixture(wallTopShape, 0.0f);
 		Body wallBottom = physicsWorld.createBody(new BodyDef());
 		PolygonShape wallBottomShape = new PolygonShape();
-		wallBottomShape.setAsEdge(new Vec2(0,getHeight()*PHYSICS_SCALE ), new Vec2(getWidth()*PHYSICS_SCALE, getHeight()*PHYSICS_SCALE));
+		wallBottomShape.setAsEdge(new Vec2(0,getHeight() ), new Vec2(getWidth(), getHeight()));
 		wallBottom.createFixture(wallBottomShape, 0.0f);
 	}
 
   public static int getHeight() {
-    return WORLD_HEIGHT * TILE_HEIGHT;
+    return WORLD_HEIGHT * TILE_HEIGHT * PHYSICS_SCALE;
   }
   public static int getWidth() {
-    return WORLD_WIDTH * TILE_WIDTH;
+    return WORLD_WIDTH * TILE_WIDTH * PHYSICS_SCALE;
   }
 
   public void addDynamicLayer(ImageLayer img) {
@@ -170,6 +175,8 @@ public class TankatarWorld implements ContactListener {
 	}
 
 	public void add(TObject entity) {
+    if (entity == null)
+      return;
 		objects.add(entity);
 		if (entity instanceof PhysicsEntity) {
 			PhysicsEntity physicsEntity = (PhysicsEntity) entity;
